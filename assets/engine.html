@@ -27,7 +27,7 @@
 </head>
 <body>
 <div id="wrap">
-  <h1>🪐 Copycat Studio v2</h1>
+  <h1>🪐 Copycat Studio v3</h1>
   <canvas id="out" width="720" height="1280"></canvas>
   <div id="bar"><div id="fill"></div></div>
   <div id="time">0.0s</div>
@@ -54,15 +54,15 @@ const EXAMPLE={meta:{title:"Why do we became adults?",highlight:"adults",fps:30,
 characters:{a:{name:"kau dewasa",height:1,skin:"#F2C49B",hair:"bob",hairColor:"#4A2E1E",shirt:"#E8B33C",shirtStyle:"collar",pants:"#4A6B8A",bag:"#3E8E8C"},
 b:{name:"kau umur 6",height:.62,skin:"#F2C49B",hair:"short",hairColor:"#4A2E1E",shirt:"#F4F1E8",shirtStyle:"stripes",pants:"#4A6B8A",bag:"#3E8E8C"}},
 shots:[
-{id:"hook",start:0,end:6,set:"bathroom",camera:{pos:[0,1.4,4.2],look:[0,1.15,0],push:.05},actors:[{char:"a",pos:[-.55,0],rot:0,action:"brush",emotion:"tired"},{char:"b",pos:[.55,0],rot:0,action:"brush",emotion:"excited",delay:.15}],caption:"dulu, kau pun macam dia.",hud:null,transition:"cut"},
-{id:"montageA",start:6,end:14,set:"kitchen",camera:{pos:[0,1.35,4],look:[0,1.05,0],push:0},actors:[{char:"a",pos:[-.6,0],rot:0,action:"phone",emotion:"tired"},{char:"b",pos:[.5,0],rot:0,action:"pour",emotion:"excited"}],caption:"dia gembira dengan benda kecil.",hud:{l1:"UMUR 6",l2:"GEMBIRA 100%"},transition:"cut"},
+{id:"hook",start:0,end:6,set:"bathroom",camera:{pos:[0,1.4,4.2],look:[0,1.2,0],push:.05},actors:[{char:"a",pos:[-.55,0],rot:0,action:"brush",emotion:"tired"},{char:"b",pos:[.55,0],rot:0,action:"brush",emotion:"excited",delay:.15}],caption:"dulu, kau pun macam dia.",hud:null,transition:"cut"},
+{id:"montageA",start:6,end:14,set:"kitchen",camera:{pos:[0,1.35,4],look:[0,1.05,0],push:0},actors:[{char:"a",pos:[-.6,-.1],rot:0,action:"phone",emotion:"tired"},{char:"b",pos:[.5,-.1],rot:0,action:"pour",emotion:"excited"}],caption:"dia gembira dengan benda kecil.",hud:{l1:"UMUR 6",l2:"GEMBIRA 100%"},transition:"cut"},
 {id:"montageB",start:14,end:20,set:"hallway",camera:{pos:[0,1.4,4.6],look:[0,1.1,0],push:0},actors:[{char:"a",pos:[-.35,-.6],rot:0,action:"walk",emotion:"tired"},{char:"b",pos:[.35,-.9],rot:0,action:"run",emotion:"happy"}],caption:"dia berlari. kau dah lupa caranya.",hud:null,transition:"cut"},
 {id:"separation",start:20,end:27,set:"door",camera:{pos:[.3,1.2,3.4],look:[.3,1,0],push:.08},actors:[{char:"a",pos:[-.6,0],rot:20,action:"wave",emotion:"soft"},{char:"b",pos:[.45,0],rot:-10,action:"fade",emotion:"sad"}],caption:"satu hari, kau tinggalkan dia.",hud:null,transition:"fade"},
 {id:"twist",start:27,end:40,set:"room_night",camera:{pos:[0,1.4,3.6],look:[0,1.25,0],push:.1},actors:[{char:"a",pos:[0,0],rot:0,action:"phone",emotion:"soft"}],caption:"rupanya dia masih ada dalam diri kau.",hud:{l1:"TAHUN 2006",l2:"KAU 6"},transition:"cut"},
 {id:"softening",start:40,end:44,set:"room_night",camera:{pos:[0,1.45,2.4],look:[0,1.35,0],push:.06},actors:[{char:"a",pos:[0,0],rot:0,action:"phone",emotion:"happy"}],caption:"kau rindu budak tu.",hud:null,transition:"cut"},
 {id:"reunion_run",start:44,end:48,set:"outside_rain",camera:{pos:[0,1.3,4.4],look:[0,1,0],push:0},actors:[{char:"a",pos:[-.2,.4],rot:0,action:"stand",emotion:"happy"},{char:"b",pos:[.3,-2],rot:0,action:"run",emotion:"excited"}],caption:"dia berlari ke arah kau.",hud:null,transition:"cut"},
-{id:"reunion_hug",start:48,end:51,set:"outside_rain",camera:{pos:[-.55,1.35,2.6],look:[.1,1,0],push:.05},actors:[{char:"a",pos:[-.1,.6],rot:180,action:"hug",emotion:"happy"},{char:"b",pos:[.1,.1],rot:0,action:"hug",emotion:"happy",talk:true}],caption:"aku tahu kau akan balik.",hud:null,transition:"cut"},
-{id:"reversal",start:51,end:61,set:"bathroom",camera:{pos:[0,1.4,4.2],look:[0,1.15,0],push:.05},actors:[{char:"a",pos:[-.55,0],rot:0,action:"brush",emotion:"excited"},{char:"b",pos:[.55,0],rot:0,action:"brush",emotion:"excited",delay:.1}],caption:"kali ni, kau yang tiru dia.",caption2:"sebab dia tak pernah hilang.",hud:null,transition:"cut"}],
+{id:"reunion_hug",start:48,end:51,set:"outside_rain",camera:{pos:[1.3,1.25,2.2],look:[0,1.05,.2],push:.05},actors:[{char:"a",pos:[-.3,.3],rot:155,action:"hug",emotion:"happy"},{char:"b",pos:[.3,-.05],rot:-15,action:"hug",emotion:"happy",talk:true}],caption:"aku tahu kau akan balik.",hud:null,transition:"cut"},
+{id:"reversal",start:51,end:61,set:"bathroom",camera:{pos:[0,1.4,4.2],look:[0,1.2,0],push:.05},actors:[{char:"a",pos:[-.55,0],rot:0,action:"brush",emotion:"excited"},{char:"b",pos:[.55,0],rot:0,action:"brush",emotion:"excited",delay:.1}],caption:"kali ni, kau yang tiru dia.",caption2:"sebab dia tak pernah hilang.",hud:null,transition:"cut"}],
 endcard:{line:"MENGIMBAS KENANGAN LAMA MEMBERI MAKNA KEPADA HIDUP (SEDIKIDES & WILDSCHUT, 2018)",cta:"HANTAR INI KEPADA KAWAN KAU",question:"bila kali terakhir kau ketawa macam budak-budak?"}};
 let STORY=/*__STORY_JSON__*/null; if(!STORY)STORY=EXAMPLE;
 
@@ -71,84 +71,85 @@ let W=720,H=1280;
 const out=document.getElementById("out"),ctx=out.getContext("2d");
 const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});
 renderer.setPixelRatio(1);renderer.setSize(W,H,false);
+renderer.outputEncoding=THREE.sRGBEncoding;
+renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;
 renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
 const scene=new THREE.Scene();
 const camera=new THREE.PerspectiveCamera(35,9/16,.1,100);
-const amb=new THREE.AmbientLight(0xFFF2DD,.34);scene.add(amb);
-const hemi=new THREE.HemisphereLight(0xFFF6E0,0x8A6A4A,.5);scene.add(hemi);
-const key=new THREE.DirectionalLight(0xFFE3B8,1.0);key.position.set(2.5,4.5,2.5);
+const amb=new THREE.AmbientLight(0xFFF2DD,.28);scene.add(amb);
+const hemi=new THREE.HemisphereLight(0xFFF6E0,0x8A6A4A,.42);scene.add(hemi);
+const key=new THREE.DirectionalLight(0xFFE3B8,.85);key.position.set(2.5,4.5,2.5);
 key.castShadow=true;key.shadow.mapSize.set(1024,1024);
-key.shadow.camera.left=-6;key.shadow.camera.right=6;key.shadow.camera.top=6;key.shadow.camera.bottom=-6;
-key.shadow.camera.near=.5;key.shadow.camera.far=16;scene.add(key);
-const fill=new THREE.DirectionalLight(0xBFD4E8,.22);fill.position.set(-3,1.5,3);scene.add(fill);
-const rim=new THREE.DirectionalLight(0xFFD9A0,.28);rim.position.set(0,3,-4);scene.add(rim);
+key.shadow.camera.left=-7;key.shadow.camera.right=7;key.shadow.camera.top=7;key.shadow.camera.bottom=-7;
+key.shadow.camera.near=.5;key.shadow.camera.far=18;scene.add(key);
+const fill=new THREE.DirectionalLight(0xBFD4E8,.12);fill.position.set(-3,1.5,3);scene.add(fill);
+const rim=new THREE.DirectionalLight(0xFFD9A0,.16);rim.position.set(0,3,-4);scene.add(rim);
 const night=new THREE.PointLight(0xBFD8FF,0,6);night.position.set(.4,1.5,1);scene.add(night);
-function M(g,c,o){const m=new THREE.MeshStandardMaterial({color:c,roughness:.95,metalness:0});if(o)Object.assign(m,o);return new THREE.Mesh(g,m)}
+function M(g,c,o){const m=new THREE.MeshStandardMaterial({color:new THREE.Color(c).convertSRGBToLinear(),roughness:.95,metalness:0});if(o)Object.assign(m,o);return new THREE.Mesh(g,m)}
 function box(w,h,d,c,o){return M(new THREE.BoxGeometry(w,h,d),c,o)}
 function sph(r,c,o){return M(new THREE.SphereGeometry(r,10,8),c,o)}
 function cyl(rt,rb,h,c,seg){return M(new THREE.CylinderGeometry(rt,rb,h,seg||10),c)}
 function put(p,m,x,y,z,rx,ry,rz){m.position.set(x,y,z);if(rx)m.rotation.x=rx;if(ry)m.rotation.y=ry;if(rz)m.rotation.z=rz;p.add(m);return m}
-function tex(w,h,fn){const c=document.createElement("canvas");c.width=w;c.height=h;fn(c.getContext("2d"),w,h);return new THREE.CanvasTexture(c)}
+function tex(w,h,fn){const c=document.createElement("canvas");c.width=w;c.height=h;fn(c.getContext("2d"),w,h);const t=new THREE.CanvasTexture(c);t.encoding=THREE.sRGBEncoding;return t}
 const blobTex=tex(128,128,(c)=>{const g=c.createRadialGradient(64,64,8,64,64,62);g.addColorStop(0,"rgba(40,25,12,.42)");g.addColorStop(1,"rgba(40,25,12,0)");c.fillStyle=g;c.fillRect(0,0,128,128)});
 
 const sets={};
 function buildSets(){
   let g=new THREE.Group();
-  put(g,box(8,4,.2,P.wall),0,2,-1.4);put(g,box(.2,4,6,P.cream),-2.6,2,0);
-  put(g,box(8,.2,6,P.cream),0,-.05,0);
-  put(g,box(3.4,.5,1,P.white),0,.55,1.5);put(g,M(new THREE.TorusGeometry(.55,.09,8,24),P.white),0,.82,1.5,Math.PI/2);
-  for(let i=0;i<7;i++)put(g,box(.16,2.6,.06,i%2?P.white:P.sage),-2.2+i*.17,1.6,.6);
-  put(g,box(1.4,.08,.4,P.woodD),-1.2,2.1,-1.2);put(g,sph(.16,P.sage),-1.5,2.3,-1.2);put(g,cyl(.1,.12,.2,P.terra),-1.5,2.15,-1.2);
-  put(g,cyl(.07,.07,.22,P.stripe),-1,2.25,-1.2);put(g,cyl(.07,.07,.22,P.terra),-.75,2.25,-1.2);
-  put(g,box(.5,.7,.05,P.mustard),1.4,1.5,-1.3);put(g,box(1,1.6,.1,P.cream),2,1.6,-1.35);
-  sets.bathroom={g,bg:"#E9C9A8",amb:.34,hemi:.5,key:1.0};
+  put(g,box(12,6,.2,P.wall),0,3,-2.2);put(g,box(.2,6,10,P.cream),-3.4,3,0);put(g,box(12,.2,10,P.cream),0,-.05,0);
+  put(g,box(3.4,.45,.9,P.white),0,.5,1.6);put(g,M(new THREE.TorusGeometry(.5,.08,8,24),P.white),0,.74,1.6,Math.PI/2);
+  for(let i=0;i<7;i++)put(g,box(.16,2.6,.06,i%2?P.white:P.sage),-2.6+i*.17,1.6,.2);
+  put(g,box(1.4,.08,.4,P.woodD),-1.6,2.1,-2);put(g,sph(.16,P.sage),-1.9,2.3,-2);put(g,cyl(.1,.12,.2,P.terra),-1.9,2.15,-2);
+  put(g,cyl(.07,.07,.22,P.stripe),-1.4,2.25,-2);put(g,cyl(.07,.07,.22,P.terra),-1.15,2.25,-2);
+  put(g,box(.5,.7,.05,P.mustard),2,1.4,-2.1);put(g,box(1.2,1.8,.1,P.cream),2.8,1.6,-2.15);
+  sets.bathroom={g,bg:"#E9C9A8",amb:.28,hemi:.42,key:.85};
   g=new THREE.Group();
-  put(g,box(8,4,.2,P.cream),0,2,-1.6);put(g,box(8,.2,6,P.wood),0,-.05,0);
-  put(g,box(2.2,1.6,.1,P.grass),.9,2.2,-1.5);put(g,box(2.3,.08,.12,P.white),.9,3,-1.45);put(g,box(2.3,.08,.12,P.white),.9,1.4,-1.45);
-  put(g,box(.08,1.6,.12,P.white),.9,2.2,-1.45);put(g,box(.08,1.6,.12,P.white),-.2,2.2,-1.45);put(g,box(.08,1.6,.12,P.white),2,2.2,-1.45);
+  put(g,box(12,6,.2,P.cream),0,3,-2.4);put(g,box(12,.2,10,P.wood),0,-.05,0);
+  put(g,box(2.6,1.8,.1,P.grass),1.1,2.3,-2.3);put(g,box(2.7,.08,.12,P.white),1.1,3.2,-2.25);put(g,box(2.7,.08,.12,P.white),1.1,1.4,-2.25);
+  put(g,box(.08,1.8,.12,P.white),1.1,2.3,-2.25);put(g,box(.08,1.8,.12,P.white),-.2,2.3,-2.25);put(g,box(.08,1.8,.12,P.white),2.4,2.3,-2.25);
   const check=tex(64,64,(c)=>{c.fillStyle="#C4502E";c.fillRect(0,0,64,64);c.fillStyle="#F4E9D8";for(let y=0;y<4;y++)for(let x=0;x<4;x++)if((x+y)%2)c.fillRect(x*16,y*16,16,16)});
-  put(g,M(new THREE.PlaneGeometry(1,2.4),{map:check}),-2,2,-1.4);
-  put(g,box(3,.9,.8,P.wood),0,.45,-1.1);put(g,M(new THREE.TorusGeometry(.22,.05,8,16,Math.PI),P.gold),.6,1.1,-1.1);
-  put(g,box(3.6,.16,1.2,P.wood),0,.78,1.3);
+  put(g,M(new THREE.PlaneGeometry(1.2,2.6),{map:check}),-2.6,2,-2.2);
+  put(g,box(3,.9,.8,P.wood),-1,.45,-1.5);put(g,M(new THREE.TorusGeometry(.22,.05,8,16,Math.PI),P.gold),-1.4,1.05,-1.5);
+  put(g,box(3.6,.14,1.1,P.wood),0,.62,1.5);
   const cb=tex(128,160,(c)=>{c.fillStyle="#C4302E";c.fillRect(0,0,128,160);c.fillStyle="#E8B33C";c.beginPath();c.arc(64,90,34,0,7);c.fill();c.fillStyle="#241A0E";c.font="bold 20px Georgia";c.textAlign="center";c.fillText("SUNNY",64,30);c.fillText("O'S",64,52);c.fillStyle="#fff";c.beginPath();c.arc(54,86,4,0,7);c.arc(74,86,4,0,7);c.fill()});
-  put(g,M(new THREE.BoxGeometry(.5,.7,.18),{map:cb}),1.1,1.2,1.2);
-  put(g,cyl(.32,.24,.2,P.white),-.4,.95,1.2);put(g,M(new THREE.TorusGeometry(.3,.04,8,20),P.stripe),-.4,1.05,1.2,Math.PI/2);
-  sets.kitchen={g,bg:"#F4E9D8",amb:.38,hemi:.55,key:1.05};
+  put(g,M(new THREE.BoxGeometry(.5,.7,.18),{map:cb}),1.2,1.05,1.4);
+  put(g,cyl(.32,.24,.2,P.white),0,.78,1.4);put(g,M(new THREE.TorusGeometry(.3,.04,8,20),P.stripe),0,.88,1.4,Math.PI/2);
+  sets.kitchen={g,bg:"#F4E9D8",amb:.32,hemi:.46,key:.9};
   g=new THREE.Group();
-  put(g,box(.2,4,10,P.wall),-1.8,2,-2);put(g,box(.2,4,10,P.wall),1.8,2,-2);
-  put(g,box(4,.2,10,P.wood),0,-.05,-2);put(g,box(4,4,.2,P.cream),0,2,-6);
+  put(g,box(.2,6,14,P.wall),-2.4,3,-3);put(g,box(.2,6,14,P.wall),2.4,3,-3);
+  put(g,box(6,.2,14,P.wood),0,-.05,-3);put(g,box(6,6,.2,P.cream),0,3,-9);
   const rug=tex(128,512,(c)=>{c.fillStyle="#F4E9D8";c.fillRect(0,0,128,512);c.fillStyle="#3E8E8C";c.fillRect(6,0,8,512);c.fillRect(114,0,8,512);c.fillStyle="#5B87A0";for(let i=0;i<6;i++){c.save();c.translate(64,50+i*82);c.rotate(Math.PI/4);c.fillRect(-22,-22,44,44);c.restore();c.fillStyle="#C4502E";c.beginPath();c.arc(64,50+i*82,8,0,7);c.fill();c.fillStyle="#5B87A0"}});
-  put(g,M(new THREE.PlaneGeometry(1.4,7),{map:rug}),0,.02,-1.5,-Math.PI/2);
+  put(g,M(new THREE.PlaneGeometry(1.8,9),{map:rug}),0,.02,-2,-Math.PI/2);
   const pic=tex(64,80,(c)=>{c.fillStyle="#F4E9D8";c.fillRect(0,0,64,80);c.fillStyle="#C4502E";c.fillRect(26,30,12,30);c.fillStyle="#4A2E1E";c.beginPath();c.arc(32,24,8,0,7);c.fill()});
-  [[-1.68,2.2,-.5],[-1.68,1.7,-1.6],[-1.68,2.4,-2.6],[1.68,2.1,-1],[1.68,1.8,-2.2]].forEach(p=>{put(g,M(new THREE.BoxGeometry(.06,.7,.55),{map:pic}),p[0],p[1],p[2])});
-  put(g,box(.7,.08,.4,P.wood),-1.4,.9,.6);put(g,cyl(.05,.07,.5,P.terra),-1.4,.6,.6);
-  put(g,cyl(.16,.22,.25,P.cream),-1.4,1.25,.6);
-  put(g,box(1.2,2.4,.15,P.white),0,1.2,-5.9);
-  sets.hallway={g,bg:"#E9C9A8",amb:.34,hemi:.5,key:1.0};
+  [[-2.28,2.2,-.5],[-2.28,1.7,-1.6],[-2.28,2.4,-2.6],[2.28,2.1,-1],[2.28,1.8,-2.2]].forEach(p=>{put(g,M(new THREE.BoxGeometry(.06,.7,.55),{map:pic}),p[0],p[1],p[2])});
+  put(g,box(.7,.08,.4,P.wood),-2,.9,.6);put(g,cyl(.05,.07,.5,P.terra),-2,.6,.6);
+  put(g,cyl(.16,.22,.25,P.cream),-2,1.25,.6);
+  put(g,box(1.4,2.6,.15,P.white),0,1.3,-8.9);
+  sets.hallway={g,bg:"#E9C9A8",amb:.28,hemi:.42,key:.85};
   g=new THREE.Group();
-  put(g,box(8,.2,6,P.cream),0,-.05,0);put(g,box(8,4,.2,P.wall),0,2,-1.2);
-  put(g,box(1.1,2.5,.12,"#2E6B5E"),-1.5,1.25,-.6,0,.5);
-  put(g,box(6,.1,4,P.grass),0,-.02,-3);
-  for(let i=0;i<9;i++)put(g,box(.08,.6,.06,P.white),-2+i*.5,.3,-2.2);
-  put(g,box(4.5,.06,.06,P.white),0,.5,-2.2);
-  put(g,cyl(.12,.16,.8,P.woodD),2.2,.4,-2.6);put(g,sph(.7,P.sage),2.2,1.3,-2.6);
-  put(g,cyl(.16,.2,.3,P.terra),-.9,.15,-.9);put(g,sph(.22,P.sage),-.9,.45,-.9);put(g,sph(.06,"#C4302E"),-.8,.55,-.85);
-  sets.door={g,bg:"#DCE8C8",amb:.42,hemi:.6,key:1.1};
+  put(g,box(12,.2,10,P.cream),0,-.05,0);put(g,box(12,6,.2,P.wall),0,3,-2);
+  put(g,box(1.1,2.5,.12,"#2E6B5E"),-1.6,1.25,-1,0,.45);
+  put(g,box(8,.1,5,P.grass),0,-.02,-4);
+  for(let i=0;i<9;i++)put(g,box(.08,.6,.06,P.white),-2.8+i*.6,.3,-3);
+  put(g,box(5.5,.06,.06,P.white),0,.5,-3);
+  put(g,cyl(.12,.16,.8,P.woodD),2.6,.4,-3.4);put(g,sph(.7,P.sage),2.6,1.3,-3.4);
+  put(g,cyl(.16,.2,.3,P.terra),-2.4,.15,-.8);put(g,sph(.22,P.sage),-2.4,.45,-.8);put(g,sph(.06,"#C4302E"),-2.3,.55,-.75);
+  sets.door={g,bg:"#DCE8C8",amb:.36,hemi:.5,key:.95};
   g=new THREE.Group();
-  put(g,box(8,4,.2,"#6B5A4A"),0,2,-1.4);put(g,box(8,.2,6,"#5A4A3A"),0,-.05,0);
-  put(g,box(1.6,.5,1,P.woodD),-1.4,.25,-.6);put(g,box(1.5,.18,.9,P.cream),-1.4,.55,-.6);put(g,box(.5,.14,.4,P.white),-1.8,.68,-.6);
-  put(g,box(1,.08,.5,P.wood),1.3,.9,-.8);put(g,cyl(.04,.05,.9,P.woodD),1.3,.45,-.8);
-  put(g,box(1.2,1,.1,"#2A3540"),1.2,2.2,-1.3);
+  put(g,box(12,6,.2,"#6B5A4A"),0,3,-2);put(g,box(12,.2,10,"#5A4A3A"),0,-.05,0);
+  put(g,box(1.6,.5,1,P.woodD),-1.4,.25,-.8);put(g,box(1.5,.18,.9,P.cream),-1.4,.55,-.8);put(g,box(.5,.14,.4,P.white),-1.8,.68,-.8);
+  put(g,box(1,.08,.5,P.wood),1.3,.9,-1);put(g,cyl(.04,.05,.9,P.woodD),1.3,.45,-1);
+  put(g,box(1.2,1,.1,"#2A3540"),1.2,2.2,-1.9);
   const flag=["#C4502E","#3E8E8C","#E8B33C","#7BA05B","#9B7FC4"];
-  for(let i=0;i<5;i++){const t=M(new THREE.ConeGeometry(.12,.25,3),flag[i]);put(g,t,-1+i*.5,2.9,-1.2,Math.PI)}
-  sets.room_night={g,bg:"#3A2F26",amb:.10,hemi:.14,key:.22};
+  for(let i=0;i<5;i++){const t=M(new THREE.ConeGeometry(.12,.25,3),flag[i]);put(g,t,-1+i*.5,2.9,-1.8,Math.PI)}
+  sets.room_night={g,bg:"#3A2F26",amb:.09,hemi:.12,key:.2};
   g=new THREE.Group();
-  put(g,box(10,.2,8,"#6F8F5F"),0,-.05,-1);
-  for(let i=0;i<11;i++)put(g,box(.08,.6,.06,P.white),-2.5+i*.5,.3,-2.4);
-  put(g,box(5.5,.06,.06,P.white),0,.5,-2.4);
-  put(g,cyl(.12,.16,.9,P.woodD),2.3,.45,-2.8);put(g,sph(.75,"#5F7F4F"),2.3,1.4,-2.8);
-  put(g,M(new THREE.CircleGeometry(.7,20),"#7FA0B0",{transparent:true,opacity:.7}),-.3,.02,1,-Math.PI/2);
-  sets.outside_rain={g,bg:"#9FB4A8",amb:.30,hemi:.42,key:.7};
+  put(g,box(14,.2,10,"#6F8F5F"),0,-.05,-1);
+  for(let i=0;i<13;i++)put(g,box(.08,.6,.06,P.white),-3.4+i*.55,.3,-3);
+  put(g,box(7,.06,.06,P.white),0,.5,-3);
+  put(g,cyl(.12,.16,.9,P.woodD),2.8,.45,-3.6);put(g,sph(.75,"#5F7F4F"),2.8,1.4,-3.6);
+  put(g,M(new THREE.CircleGeometry(.7,20),"#7FA0B0",{transparent:true,opacity:.7}),-.5,.02,1.2,-Math.PI/2);
+  sets.outside_rain={g,bg:"#9FB4A8",amb:.26,hemi:.36,key:.6};
   for(const k in sets){sets[k].g.visible=false;
     sets[k].g.traverse(m=>{if(m.isMesh){m.castShadow=true;m.receiveShadow=true}});
     scene.add(sets[k].g)}
@@ -281,11 +282,11 @@ function drawCaption(c,text,alpha){if(!text)return;const px=W*.044;
   c.globalAlpha=1;c.shadowBlur=0}
 function drawHUD(c,hud){if(!hud)return;const x=W*.07,y=H*.46;
   c.textAlign="left";c.textBaseline="middle";
-  c.font=`600 ${W*.03}px "EB Garamond",Georgia,serif`;c.fillStyle="#FFF";c.shadowColor="rgba(0,0,0,.5)";c.shadowBlur=4;
+  c.font=`600 ${W*.03}px "EB Garamond",Georgia,serif`;c.fillStyle="#FFF";c.shadowColor="rgba(0,0,0,.7)";c.shadowBlur=6;
   c.fillText(hud.l1||"",x,y);c.font=`500 ${W*.022}px "EB Garamond",Georgia,serif`;c.fillText(hud.l2||"",x,y+W*.04);c.shadowBlur=0}
 let frozen=null,frozenBlur=null,vig=null;
 function makeVig(){vig=ctx.createRadialGradient(W/2,H*.45,H*.25,W/2,H*.5,H*.75);
-  vig.addColorStop(0,"rgba(255,244,214,.05)");vig.addColorStop(1,"rgba(70,45,20,.16)")}
+  vig.addColorStop(0,"rgba(255,244,214,.04)");vig.addColorStop(1,"rgba(60,38,18,.18)")}
 function makeFrozen(){frozen=document.createElement("canvas");frozen.width=W;frozen.height=H;frozen.getContext("2d").drawImage(out,0,0);
   frozenBlur=document.createElement("canvas");frozenBlur.width=W;frozenBlur.height=H;
   const c=frozenBlur.getContext("2d");c.filter=`blur(${W*.012}px)`;c.drawImage(frozen,-10,-10,W+20,H+20);c.filter="none"}
@@ -362,7 +363,8 @@ function fixCam(pos,look,s){
     maxH=Math.max(maxH,(STORY.characters[a.char]?STORY.characters[a.char].height:1)*1.9)}
   const needW=s.actors.length>1?(maxX-minX)+1.1:1.8,needH=maxH+.7;
   const tanV=Math.tan(35*Math.PI/360),asp=W/H;
-  const dmin=Math.max(needW/(2*tanV*asp),needH/(2*tanV),2.0);
+  let dmin=Math.max(needW/(2*tanV*asp),needH/(2*tanV),2.0);
+  dmin=Math.min(dmin,6.0);
   if(d<dmin){pos.copy(look).addScaledVector(u,dmin);d=dmin}
   for(let i=0;i<16;i++){let md=99;
     for(const a of s.actors){const h=(STORY.characters[a.char]?STORY.characters[a.char].height:1);
@@ -371,7 +373,7 @@ function fixCam(pos,look,s){
   return pos}
 function applyShot(s,t){
   for(const k in sets)sets[k].g.visible=(k===s.set);
-  const st=sets[s.set];scene.background=new THREE.Color(st.bg);
+  const st=sets[s.set];scene.background=new THREE.Color(st.bg).convertSRGBToLinear();
   amb.intensity=st.amb;hemi.intensity=st.hemi;key.intensity=st.key;
   night.intensity=s.set==="room_night"?.8:0;
   for(const m of rain)m.visible=(s.set==="outside_rain");
