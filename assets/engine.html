@@ -27,7 +27,7 @@
 </head>
 <body>
 <div id="wrap">
-  <h1>🪐 Copycat Studio v4</h1>
+  <h1>🪐 Copycat Studio v5</h1>
   <canvas id="out" width="720" height="1280"></canvas>
   <div id="bar"><div id="fill"></div></div>
   <div id="time">0.0s</div>
@@ -104,7 +104,11 @@ function buildSets(){
   put(g,box(1.4,.08,.4,P.woodD),-1.6,2.1,-2);put(g,sph(.16,P.sage),-1.9,2.3,-2);put(g,cyl(.1,.12,.2,P.terra),-1.9,2.15,-2);
   put(g,cyl(.07,.07,.22,P.stripe),-1.4,2.25,-2);put(g,cyl(.07,.07,.22,P.terra),-1.15,2.25,-2);
   put(g,box(.5,.7,.05,P.mustard),2,1.4,-2.1);put(g,box(1.2,1.8,.1,P.cream),2.8,1.6,-2.15);
+  // HERO PROP: Towel rack & towel
+  put(g,cyl(.02,.02,.6,P.white,6),-3.2,1.6,-1.5,0,0,Math.PI/2);
+  put(g,box(.4,.5,.05,P.white),-3.2,1.3,-1.5);
   sets.bathroom={g,bg:"#E9C9A8",amb:.28,hemi:.42,key:.85};
+  
   g=new THREE.Group();
   put(g,box(12,6,.2,P.cream),0,3,-2.4);put(g,box(12,.2,10,P.wood),0,-.05,0);
   put(g,box(2.6,1.8,.1,P.grass),1.1,2.3,-2.3);put(g,box(2.7,.08,.12,P.white),1.1,3.2,-2.25);put(g,box(2.7,.08,.12,P.white),1.1,1.4,-2.25);
@@ -117,7 +121,11 @@ function buildSets(){
   put(g,M(new THREE.BoxGeometry(.5,.7,.18),{map:cb}),1.15,1.05,1.45);
   put(g,cyl(.32,.24,.2,P.white),.5,.78,1.4);put(g,M(new THREE.TorusGeometry(.3,.04,8,20),P.stripe),.5,.88,1.4,Math.PI/2);
   put(g,cyl(.26,.2,.18,P.white),-.6,.77,1.4);put(g,M(new THREE.TorusGeometry(.24,.035,8,20),P.stripe),-.6,.86,1.4,Math.PI/2);
+  // HERO PROP: Fruit bowl
+  put(g,cyl(.25,.15,.15,P.white,8),-1.2,.7,1.4);
+  put(g,sph(.08,P.terra),-1.2,.82,1.4);put(g,sph(.08,"#E8B33C"),-1.1,.82,1.45);
   sets.kitchen={g,bg:"#F4E9D8",amb:.32,hemi:.46,key:.9};
+  
   g=new THREE.Group();
   put(g,box(.2,6,14,P.wall),-2.4,3,-3);put(g,box(.2,6,14,P.wall),2.4,3,-3);
   put(g,box(6,.2,14,P.wood),0,-.05,-3);put(g,box(6,6,.2,P.cream),0,3,-9);
@@ -128,7 +136,10 @@ function buildSets(){
   put(g,box(.7,.08,.4,P.wood),-2,.9,.6);put(g,cyl(.05,.07,.5,P.terra),-2,.6,.6);
   put(g,cyl(.16,.22,.25,P.cream),-2,1.25,.6);
   put(g,box(1.4,2.6,.15,P.white),0,1.3,-8.9);
+  // HERO PROP: Vase with plant
+  put(g,cyl(.1,.15,.3,P.teal,8),-2,1.4,.6);put(g,sph(.12,P.sage),-2,1.6,.6);
   sets.hallway={g,bg:"#E9C9A8",amb:.28,hemi:.42,key:.85};
+  
   g=new THREE.Group();
   put(g,box(12,.2,10,P.cream),0,-.05,0);put(g,box(12,6,.2,P.wall),0,3,-2);
   put(g,box(1.1,2.5,.12,"#2E6B5E"),-1.15,1.25,-.8,0,.45);
@@ -138,6 +149,7 @@ function buildSets(){
   put(g,cyl(.12,.16,.8,P.woodD),2.6,.4,-3.4);put(g,sph(.7,P.sage),2.6,1.3,-3.4);
   put(g,cyl(.16,.2,.3,P.terra),-1.9,.15,-.8);put(g,sph(.22,P.sage),-1.9,.45,-.8);put(g,sph(.06,"#C4302E"),-1.8,.55,-.75);
   sets.door={g,bg:"#DCE8C8",amb:.36,hemi:.5,key:.95};
+  
   g=new THREE.Group();
   put(g,box(12,6,.2,"#6B5A4A"),0,3,-2);put(g,box(12,.2,10,"#5A4A3A"),0,-.05,0);
   put(g,box(1.6,.5,1,P.woodD),-1.4,.25,-.8);put(g,box(1.5,.18,.9,P.cream),-1.4,.55,-.8);put(g,box(.5,.14,.4,P.white),-1.8,.68,-.8);
@@ -145,14 +157,21 @@ function buildSets(){
   put(g,box(1.2,1,.1,"#2A3540"),1.2,2.2,-1.9);
   const flag=["#C4502E","#3E8E8C","#E8B33C","#7BA05B","#9B7FC4"];
   for(let i=0;i<5;i++){const t=M(new THREE.ConeGeometry(.12,.25,3),flag[i]);put(g,t,-1+i*.5,2.9,-1.8,Math.PI)}
+  // HERO PROP: Glowing lamp
+  put(g,cyl(.1,.15,.4,P.woodD,8),1.3,.2,-.8);
+  put(g,sph(.15,P.cream,{emissive:0xFFE3B8,emissiveIntensity:0.8}),1.3,.45,-.8);
   sets.room_night={g,bg:"#3A2F26",amb:.09,hemi:.12,key:.2};
+  
   g=new THREE.Group();
   put(g,box(14,.2,10,"#6F8F5F"),0,-.05,-1);
   for(let i=0;i<13;i++)put(g,box(.08,.6,.06,P.white),-3.4+i*.55,.3,-3);
   put(g,box(7,.06,.06,P.white),0,.5,-3);
   put(g,cyl(.12,.16,.9,P.woodD),2.8,.45,-3.6);put(g,sph(.75,"#5F7F4F"),2.8,1.4,-3.6);
   put(g,M(new THREE.CircleGeometry(.7,20),"#7FA0B0",{transparent:true,opacity:.7}),-.5,.02,1.2,-Math.PI/2);
+  // HERO PROP: Bench
+  put(g,box(1.2,.1,.4,P.woodD),2.5,.3,-2);put(g,box(.1,.3,.1,P.woodD),2.0,.15,-2);put(g,box(.1,.3,.1,P.woodD),3.0,.15,-2);
   sets.outside_rain={g,bg:"#9FB4A8",amb:.26,hemi:.36,key:.6};
+  
   for(const k in sets){sets[k].g.visible=false;
     sets[k].g.traverse(m=>{if(m.isMesh){m.castShadow=true;m.receiveShadow=true}});
     scene.add(sets[k].g)}
@@ -163,44 +182,63 @@ const chars={};
 function buildChar(cfg){
   const root=new THREE.Group(),rig={};
   const skin=cfg.skin||P.skin,hairC=cfg.hairColor||P.hair,shirt=cfg.shirt||P.mustard,pants=cfg.pants||"#4A6B8A";
-  rig.torso=put(root,box(.56,.62,.34,shirt),0,.86,0);
-  if((cfg.shirtStyle||"plain")==="collar"){put(root,cyl(.15,.16,.07,P.white),0,1.2,0);put(root,cyl(.15,.16,.05,"#3A5A7A"),0,1.16,0);
-    for(let i=0;i<4;i++)put(root,sph(.025,P.white),0,.62+i*.14,.18)}
-  if(cfg.shirtStyle==="stripes"){for(let i=0;i<3;i++)put(root,box(.57,.06,.35,P.stripe),0,.7+i*.18,0)}
-  rig.head=new THREE.Group();rig.head.position.set(0,1.42,0);root.add(rig.head);
-  put(rig.head,box(.6,.55,.52,skin),0,.05,0);
+  
+  // Soft rounded torso
+  rig.torso=put(root,cyl(.32,.28,.6,shirt,8),0,.9,0);
+  
+  if((cfg.shirtStyle||"plain")==="collar"){
+      put(root,cyl(.2,.2,.08,P.white,8),0,1.22,0);
+      put(root,cyl(.2,.2,.06,"#3A5A7A",8),0,1.18,0);
+      for(let i=0;i<3;i++)put(root,sph(.03,P.white),0,.7+i*.15,.3);
+  }
+  if(cfg.shirtStyle==="stripes"){
+      for(let i=0;i<3;i++)put(root,cyl(.33,.29,.08,P.stripe,8),0,.75+i*.15,0);
+  }
+
+  // Soft rounded head
+  rig.head=new THREE.Group();rig.head.position.set(0,1.45,0);root.add(rig.head);
+  put(rig.head,cyl(.32,.34,.55,skin,8),0,.05,0);
+  
   const hs=cfg.hair||"bob";
-  put(rig.head,box(.64,.2,.56,hairC),0,.3,0);
-  put(rig.head,box(.64,.4,.12,hairC),0,.1,-.26);
-  if(hs==="bob"||hs==="long"){put(rig.head,box(.1,.42,.5,hairC),-.31,.05,0);put(rig.head,box(.1,.42,.5,hairC),.31,.05,0)}
-  if(hs==="long")put(rig.head,box(.6,.6,.12,hairC),0,-.25,-.26);
-  if(hs==="bun")put(rig.head,sph(.14,hairC),0,.42,-.15);
-  rig.eyeL=put(rig.head,sph(.055,"#241A0E"),-.13,.08,.27);rig.eyeR=put(rig.head,sph(.055,"#241A0E"),.13,.08,.27);
-  rig.eyeL.scale.z=.4;rig.eyeR.scale.z=.4;
-  rig.browL=put(rig.head,box(.14,.035,.03,"#241A0E"),-.13,.2,.27);
-  rig.browR=put(rig.head,box(.14,.035,.03,"#241A0E"),.13,.2,.27);
+  put(rig.head,box(.68,.2,.58,hairC),0,.32,0);
+  put(rig.head,box(.68,.4,.12,hairC),0,.1,-.28);
+  if(hs==="bob"||hs==="long"){put(rig.head,box(.12,.45,.52,hairC),-.32,.05,0);put(rig.head,box(.12,.45,.52,hairC),.32,.05,0)}
+  if(hs==="long")put(rig.head,box(.68,.6,.12,hairC),0,-.25,-.28);
+  if(hs==="bun")put(rig.head,sph(.15,hairC),0,.45,-.15);
+
+  rig.eyeL=put(rig.head,sph(.06,"#241A0E"),-.14,.08,.28);rig.eyeR=put(rig.head,sph(.06,"#241A0E"),.14,.08,.28);
+  rig.eyeL.scale.z=.5;rig.eyeR.scale.z=.5;
+  rig.browL=put(rig.head,box(.14,.04,.03,"#241A0E"),-.14,.22,.28);
+  rig.browR=put(rig.head,box(.14,.04,.03,"#241A0E"),.14,.22,.28);
+  
   rig.mouths={};
-  rig.mouths.line=put(rig.head,box(.12,.025,.03,"#241A0E"),0,-.12,.27);
-  rig.mouths.smile=put(rig.head,M(new THREE.TorusGeometry(.08,.018,6,12,Math.PI),"#241A0E"),0,-.1,.27,0,0,Math.PI);
-  rig.mouths.frown=put(rig.head,M(new THREE.TorusGeometry(.07,.016,6,12,Math.PI),"#241A0E"),0,-.16,.27);
-  rig.mouths.open=put(rig.head,sph(.06,"#5A2A2A"),0,-.12,.27);rig.mouths.open.scale.set(1,.7,.4);
-  rig.mouths.small=put(rig.head,M(new THREE.TorusGeometry(.05,.014,6,10,Math.PI),"#241A0E"),0,-.11,.27,0,0,Math.PI);
-  rig.armL=new THREE.Group();rig.armL.position.set(-.33,1.1,0);root.add(rig.armL);
-  put(rig.armL,box(.13,.5,.13,shirt),0,-.25,0);rig.handL=put(rig.armL,sph(.08,skin),0,-.52,0);
-  rig.armR=new THREE.Group();rig.armR.position.set(.33,1.1,0);root.add(rig.armR);
-  put(rig.armR,box(.13,.5,.13,shirt),0,-.25,0);rig.handR=put(rig.armR,sph(.08,skin),0,-.52,0);
-  rig.legL=new THREE.Group();rig.legL.position.set(-.13,.55,0);root.add(rig.legL);
-  put(rig.legL,box(.15,.5,.15,pants),0,-.25,0);put(rig.legL,box(.16,.09,.24,P.white),0,-.52,.04);
-  rig.legR=new THREE.Group();rig.legR.position.set(.13,.55,0);root.add(rig.legR);
-  put(rig.legR,box(.15,.5,.15,pants),0,-.25,0);put(rig.legR,box(.16,.09,.24,P.white),0,-.52,.04);
+  rig.mouths.line=put(rig.head,box(.12,.03,.03,"#241A0E"),0,-.12,.28);
+  rig.mouths.smile=put(rig.head,M(new THREE.TorusGeometry(.08,.02,6,12,Math.PI),"#241A0E"),0,-.1,.28,0,0,Math.PI);
+  rig.mouths.frown=put(rig.head,M(new THREE.TorusGeometry(.07,.016,6,12,Math.PI),"#241A0E"),0,-.16,.28);
+  rig.mouths.open=put(rig.head,sph(.06,"#5A2A2A"),0,-.12,.28);rig.mouths.open.scale.set(1,.7,.4);
+  rig.mouths.small=put(rig.head,M(new THREE.TorusGeometry(.05,.014,6,10,Math.PI),"#241A0E"),0,-.11,.28,0,0,Math.PI);
+
+  // Soft rounded limbs
+  rig.armL=new THREE.Group();rig.armL.position.set(-.38,1.1,0);root.add(rig.armL);
+  put(rig.armL,cyl(.09,.09,.5,shirt,6),0,-.25,0);rig.handL=put(rig.armL,sph(.1,skin),0,-.52,0);
+  rig.armR=new THREE.Group();rig.armR.position.set(.38,1.1,0);root.add(rig.armR);
+  put(rig.armR,cyl(.09,.09,.5,shirt,6),0,-.25,0);rig.handR=put(rig.armR,sph(.1,skin),0,-.52,0);
+  
+  rig.legL=new THREE.Group();rig.legL.position.set(-.15,.55,0);root.add(rig.legL);
+  put(rig.legL,cyl(.1,.1,.5,pants,6),0,-.25,0);put(rig.legL,box(.18,.1,.26,P.white),0,-.52,.04);
+  rig.legR=new THREE.Group();rig.legR.position.set(.15,.55,0);root.add(rig.legR);
+  put(rig.legR,cyl(.1,.1,.5,pants,6),0,-.25,0);put(rig.legR,box(.18,.1,.26,P.white),0,-.52,.04);
+
   rig.brush=put(rig.handR,box(.04,.3,.04,P.teal),0,-.05,.1,.5);rig.brush.visible=false;
   rig.phone=put(rig.handR,box(.12,.22,.03,"#2A2A2A"),0,-.08,.05);rig.phone.visible=false;
   rig.spoon=put(rig.handR,box(.03,.25,.03,"#9AA0A8"),0,-.05,.08,.6);rig.spoon.visible=false;
   rig.cbox=put(root,box(.4,.55,.15,"#C4302E"),0,1,.5);rig.cbox.visible=false;
   rig.bag=put(root,box(.4,.5,.15,cfg.bag||P.teal),0,.95,-.26);rig.bag.visible=false;
   put(root,box(.06,.5,.05,cfg.bag||P.teal),.15,1.05,-.1,.3);
+  
   const blob=new THREE.Mesh(new THREE.PlaneGeometry(1.5,1.1),new THREE.MeshBasicMaterial({map:blobTex,transparent:true,depthWrite:false}));
   blob.rotation.x=-Math.PI/2;blob.position.y=.03;blob.castShadow=false;blob.receiveShadow=false;blob.renderOrder=2;root.add(blob);
+  
   root.scale.setScalar(cfg.height||1);
   root.traverse(o=>{if(o.isMesh&&o!==blob){o.material=o.material.clone();o.material.transparent=true;o.castShadow=true}});
   root.userData.rig=rig;root.userData.pitch=(cfg.height||1)>=.9?130:250;root.userData.mouthOpen=0;root.userData.nextSyl=0;
