@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Copycat Studio v9</title>
+<title>Copycat Studio v9.4</title>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
@@ -27,7 +27,7 @@
 </head>
 <body>
 <div id="wrap">
-  <h1>🪐 Copycat Studio v9</h1>
+  <h1>🪐 Copycat Studio v9.4</h1>
   <canvas id="out" width="720" height="1280"></canvas>
   <div id="bar"><div id="fill"></div></div>
   <div id="time">0.0s</div>
@@ -113,17 +113,22 @@ const ceramicTex = makeTex(64, 64, (ctx, w, h) => {
     ctx.globalAlpha = 1;
 });
 
-// --- ROBUST MATERIAL FUNCTION (Fixes the vanishing tree/sink) ---
+// --- ROBUST MATERIAL FUNCTION ---
 function M(g, c, o) {
     let mat;
     if (typeof c === 'string') {
         mat = new THREE.MeshStandardMaterial({ color: new THREE.Color(c).convertSRGBToLinear(), roughness: 0.95, metalness: 0 });
-    } else {
+    } else if (c && c.isTexture) {
         mat = new THREE.MeshStandardMaterial({ map: c, roughness: 0.9, metalness: 0 });
+    } else if (c && typeof c === 'object' && !c.isTexture) {
+        mat = new THREE.MeshStandardMaterial(c);
+    } else {
+        mat = new THREE.MeshStandardMaterial({ color: 0xffffff });
     }
     if (o) Object.assign(mat, o);
     return new THREE.Mesh(g, mat);
 }
+
 function box(w,h,d,c,o){ return M(new THREE.BoxGeometry(w,h,d), c, o); }
 function sph(r,c,o){ return M(new THREE.SphereGeometry(r,12,10), c, o); }
 function cyl(rt,rb,h,c,seg){ return M(new THREE.CylinderGeometry(rt,rb,h,seg||10), c); }
@@ -136,15 +141,11 @@ function buildSets(){
   // BATHROOM
   let g=new THREE.Group();
   put(g,box(12,6,.2,P.wall),0,3,-2.2);put(g,box(.2,6,10,P.cream),-3.4,3,0);put(g,box(12,.2,10,P.cream),0,-.05,0);
-  // Fixed Sink: Countertop + Bowl Basin + Rim
   put(g, box(3.4, 0.1, 0.9, ceramicTex), 0, 0.5, 1.6);
   put(g, M(new THREE.SphereGeometry(0.45, 16, 12, 0, Math.PI*2, 0, Math.PI/2), P.white), 0, 0.5, 1.6, Math.PI, 0, 0);
   put(g, M(new THREE.TorusGeometry(0.45, 0.06, 8, 24), P.white), 0, 0.5, 1.6, Math.PI/2, 0, 0);
-  // Mirror
   put(g,box(1.2,1.6,.05,woodTex),0,2.2,-2.1);put(g,box(1.1,1.5,.06,"#D0E8F0"),0,2.2,-2.05);
-  // Towel
   put(g,box(.6,1.2,.08,P.teal),1.8,1.8,-2.1);put(g,box(.6,.05,.1,woodTex),1.8,2.4,-2.1);
-  // Shelf props
   for(let i=0;i<7;i++)put(g,box(.16,2.6,.06,i%2?P.white:P.sage),-2.2+i*.17,1.6,.2);
   put(g,box(1.4,.08,.4,woodTex),-1.6,2.1,-2);put(g,sph(.16,P.sage),-1.9,2.3,-2);put(g,cyl(.1,.12,.2,ceramicTex),-1.9,2.15,-2);
   put(g,cyl(.05,.05,.2,ceramicTex),-1.4,2.25,-2);put(g,box(.06,.06,.06,P.teal),-1.4,2.35,-2);
@@ -160,13 +161,11 @@ function buildSets(){
   put(g,box(.08,1.8,.12,P.white),1.1,2.3,-2.25);put(g,box(.08,1.8,.12,P.white),-.2,2.3,-2.25);put(g,box(.08,1.8,.12,P.white),2.4,2.3,-2.25);
   const check=tex(64,64,(c)=>{c.fillStyle="#C4502E";c.fillRect(0,0,64,64);c.fillStyle="#F4E9D8";for(let y=0;y<4;y++)for(let x=0;x<4;x++)if((x+y)%2)c.fillRect(x*16,y*16,16,16)});
   put(g,M(new THREE.PlaneGeometry(1.2,2.6),{map:check}),-2.6,2,-2.2);
-  // Table with round legs
   put(g,box(3,.08,.8,woodTex),-1,.9,-1.5);
   put(g,cyl(.08,.08,.9,woodTex),-2.2,.45,-1.8);put(g,cyl(.08,.08,.9,woodTex),.2,.45,-1.8);
   put(g,cyl(.08,.08,.9,woodTex),-2.2,.45,-1.2);put(g,cyl(.08,.08,.9,woodTex),.2,.45,-1.2);
   put(g,M(new THREE.TorusGeometry(.22,.05,8,16,Math.PI),P.gold),-1.4,1.05,-1.5);
   put(g,box(3.6,.14,1.1,woodTex),0,.62,1.5);
-  // Fruit bowl
   put(g,cyl(.3,.25,.15,ceramicTex),1.5,.7,1.4);put(g,sph(.12,"#C4302E"),1.4,.85,1.4);put(g,sph(.12,"#E8B33C"),1.6,.85,1.45);put(g,sph(.12,"#7BA05B"),1.5,.9,1.35);
   const cb=tex(128,160,(c)=>{c.fillStyle="#C4302E";c.fillRect(0,0,128,160);c.fillStyle="#E8B33C";c.beginPath();c.arc(64,90,34,0,7);c.fill();c.fillStyle="#241A0E";c.font="bold 20px Georgia";c.textAlign="center";c.fillText("SUNNY",64,30);c.fillText("O'S",64,52);c.fillStyle="#fff";c.beginPath();c.arc(54,86,4,0,7);c.arc(74,86,4,0,7);c.fill()});
   put(g,M(new THREE.BoxGeometry(.5,.7,.18),{map:cb}),1.15,1.05,1.45);
@@ -196,11 +195,10 @@ function buildSets(){
   put(g,box(8,.1,5,P.grass),0,-.02,-4);
   for(let i=0;i<9;i++)put(g,cyl(.04,.04,.6,P.white,6),-2.8+i*.6,.3,-3);
   put(g,box(5.5,.06,.06,P.white),0,.5,-3);
-  // Tree with soft leaf cluster (Fixed!)
-  put(g,cyl(.12,.16,.9,woodTex),2.6,.45,-3.4);
-  put(g,sph(0.4, leafTex),2.6,1.1,-3.4);
-  put(g,sph(0.35, leafTex),2.3,1.2,-3.3);
-  put(g,sph(0.3, leafTex),2.9,1.2,-3.5);
+  put(g,cyl(.12,.16,.9,woodTex), 1.5 ,.45,-3.4);
+  put(g,sph(0.4, leafTex), 1.5 ,1.1,-3.4);
+  put(g,sph(0.35, leafTex), 1.2 ,1.2,-3.3);
+  put(g,sph(0.3, leafTex), 1.8 ,1.2,-3.5);
   put(g,cyl(.16,.2,.3,ceramicTex),-1.9,.15,-.8);put(g,sph(.22,P.sage),-1.9,.45,-.8);put(g,sph(.06,"#C4302E"),-1.8,.55,-.75);
   sets.door={g,bg:"#DCE8C8",amb:.36,hemi:.5,key:.95};
 
@@ -215,12 +213,19 @@ function buildSets(){
   for(let i=0;i<5;i++){const t=M(new THREE.ConeGeometry(.12,.25,3),flag[i]);put(g,t,-1+i*.5,2.9,-1.8,Math.PI)}
   sets.room_night={g,bg:"#3A2F26",amb:.09,hemi:.12,key:.2};
 
-  // OUTSIDE RAIN
+  // OUTSIDE RAIN (Tree & Grass Fixed!)
   g=new THREE.Group();
-  put(g,M(new THREE.PlaneGeometry(14,10),{map:leafTex,color:0x6F8F5F}),0,-.05,-1);
+  // CHANGED: Thick box instead of plane so kid can't phase through
+  put(g, box(14, 0.2, 10, P.grass), 0, -0.1, -1);
   for(let i=0;i<13;i++)put(g,cyl(.04,.04,.6,P.white,6),-3.4+i*.55,.3,-3);
   put(g,box(7,.06,.06,P.white),0,.5,-3);
-  put(g,box(.3,.4,.2,P.teal),2.5,.5,-1);put(g,cyl(.05,.05,.5,woodTex),2.5,.25,-1);
+  // CHANGED: Tree moved to X=1.0 (was 2.0, off-screen) and made bigger
+  put(g,cyl(.15,.2,1.2,woodTex), 1.0 ,.6,-2.5);
+  put(g,sph(0.5, leafTex), 1.0 ,1.4,-2.5);
+  put(g,sph(0.4, leafTex), 0.7 ,1.5,-2.4);
+  put(g,sph(0.4, leafTex), 1.3 ,1.5,-2.6);
+  // CHANGED: Mailbox moved closer
+  put(g,box(.3,.4,.2,P.teal), 1.2 ,.5,-1.5);put(g,cyl(.05,.05,.5,woodTex), 1.2 ,.25,-1.5);
   sets.outside_rain={g,bg:"#9FB4A8",amb:.26,hemi:.36,key:.6};
 
   for(const k in sets){sets[k].g.visible=false;
@@ -240,17 +245,16 @@ function buildChar(cfg){
   rig.head=new THREE.Group();rig.head.position.set(0,1.42,0);root.add(rig.head);
   put(rig.head,sph(.32,skin),0,.05,0);
   
-  // --- SOFT HAIR (Moved UP so it doesn't cover eyes) ---
   const hairMat = new THREE.MeshStandardMaterial({color: new THREE.Color(hairC).convertSRGBToLinear(), roughness: 0.95, metalness: 0});
   const hs=cfg.hair||"bob";
   
   const dome = new THREE.Mesh(new THREE.SphereGeometry(0.36, 16, 12), hairMat);
-  dome.position.set(0, 0.28, -0.05); // MOVED UP
+  dome.position.set(0, 0.28, -0.05);
   dome.scale.set(1.0, 0.8, 1.1);
   rig.head.add(dome);
   
   const bangs = new THREE.Mesh(new THREE.SphereGeometry(0.22, 12, 8), hairMat);
-  bangs.position.set(0, 0.35, 0.20); // MOVED UP
+  bangs.position.set(0, 0.35, 0.20);
   bangs.scale.set(1.4, 0.3, 0.9);
   rig.head.add(bangs);
   
