@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Copycat Studio v5</title>
+<title>Copycat Studio v6</title>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
@@ -27,7 +27,7 @@
 </head>
 <body>
 <div id="wrap">
-  <h1>🪐 Copycat Studio v5</h1>
+  <h1>🪐 Copycat Studio v6</h1>
   <canvas id="out" width="720" height="1280"></canvas>
   <div id="bar"><div id="fill"></div></div>
   <div id="time">0.0s</div>
@@ -87,7 +87,7 @@ const rim=new THREE.DirectionalLight(0xFFD9A0,.16);rim.position.set(0,3,-4);scen
 const night=new THREE.PointLight(0xBFD8FF,0,6);night.position.set(.4,1.5,1);scene.add(night);
 function M(g,c,o){const m=new THREE.MeshStandardMaterial({color:new THREE.Color(c).convertSRGBToLinear(),roughness:.95,metalness:0});if(o)Object.assign(m,o);return new THREE.Mesh(g,m)}
 function box(w,h,d,c,o){return M(new THREE.BoxGeometry(w,h,d),c,o)}
-function sph(r,c,o){return M(new THREE.SphereGeometry(r,10,8),c,o)}
+function sph(r,c,o){return M(new THREE.SphereGeometry(r,12,10),c,o)} // Higher poly sphere for smoother look
 function cyl(rt,rb,h,c,seg){return M(new THREE.CylinderGeometry(rt,rb,h,seg||10),c)}
 function put(p,m,x,y,z,rx,ry,rz){m.position.set(x,y,z);if(rx)m.rotation.x=rx;if(ry)m.rotation.y=ry;if(rz)m.rotation.z=rz;p.add(m);return m}
 function tex(w,h,fn){const c=document.createElement("canvas");c.width=w;c.height=h;fn(c.getContext("2d"),w,h);const t=new THREE.CanvasTexture(c);t.encoding=THREE.sRGBEncoding;return t}
@@ -191,44 +191,64 @@ const chars={};
 function buildChar(cfg){
   const root=new THREE.Group(),rig={};
   const skin=cfg.skin||P.skin,hairC=cfg.hairColor||P.hair,shirt=cfg.shirt||P.mustard,pants=cfg.pants||"#4A6B8A";
-  // Softened torso
+  
+  // TORSO
   rig.torso=put(root,box(.56,.62,.34,shirt),0,.86,0);
   if((cfg.shirtStyle||"plain")==="collar"){put(root,cyl(.15,.16,.07,P.white),0,1.2,0);put(root,cyl(.15,.16,.05,"#3A5A7A"),0,1.16,0);
     for(let i=0;i<4;i++)put(root,sph(.025,P.white),0,.62+i*.14,.18)}
   if(cfg.shirtStyle==="stripes"){for(let i=0;i<3;i++)put(root,box(.57,.06,.35,P.stripe),0,.7+i*.18,0)}
   
+  // HEAD (Rounded)
   rig.head=new THREE.Group();rig.head.position.set(0,1.42,0);root.add(rig.head);
-  // Rounded head (using sphere for face, box for hair base)
-  put(rig.head,sph(.32,skin),0,.05,0);
+  put(rig.head,sph(.32,skin),0,.05,0); // Round face
+  
+  // HAIR (Softer helmet shape)
   const hs=cfg.hair||"bob";
-  put(rig.head,box(.64,.2,.56,hairC),0,.3,0);
-  put(rig.head,box(.64,.4,.12,hairC),0,.1,-.26);
-  if(hs==="bob"||hs==="long"){put(rig.head,box(.1,.42,.5,hairC),-.31,.05,0);put(rig.head,box(.1,.42,.5,hairC),.31,.05,0)}
-  if(hs==="long")put(rig.head,box(.6,.6,.12,hairC),0,-.25,-.26);
+  put(rig.head,box(.66,.18,.58,hairC),0,.32,0); // Top
+  put(rig.head,box(.66,.35,.12,hairC),0,.12,-.26); // Back
+  if(hs==="bob"||hs==="long"){put(rig.head,box(.12,.45,.52,hairC),-.32,.08,0);put(rig.head,box(.12,.45,.52,hairC),.32,.08,0)} // Sides
+  if(hs==="long")put(rig.head,box(.62,.6,.12,hairC),0,-.25,-.26);
   if(hs==="bun")put(rig.head,sph(.14,hairC),0,.42,-.15);
   
-  rig.eyeL=put(rig.head,sph(.055,"#241A0E"),-.13,.08,.27);rig.eyeR=put(rig.head,sph(.055,"#241A0E"),.13,.08,.27);
+  // EYES (Fixed position on sphere surface)
+  rig.eyeL=put(rig.head,sph(.05,"#241A0E"),-.12,.05,.30);rig.eyeR=put(rig.head,sph(.05,"#241A0E"),.12,.05,.30);
   rig.eyeL.scale.z=.4;rig.eyeR.scale.z=.4;
-  rig.browL=put(rig.head,box(.14,.035,.03,"#241A0E"),-.13,.2,.27);
-  rig.browR=put(rig.head,box(.14,.035,.03,"#241A0E"),.13,.2,.27);
+  rig.browL=put(rig.head,box(.14,.035,.03,"#241A0E"),-.12,.18,.30);
+  rig.browR=put(rig.head,box(.14,.035,.03,"#241A0E"),.12,.18,.30);
   
-  // MOUTHS - Fixed and visible
+  // MOUTHS
   rig.mouths={};
-  rig.mouths.line=put(rig.head,box(.1,.025,.02,"#241A0E"),0,-.12,.28);
-  rig.mouths.smile=put(rig.head,M(new THREE.TorusGeometry(.06,.015,8,12,Math.PI),"#241A0E"),0,-.12,.28,0,0,Math.PI);
-  rig.mouths.frown=put(rig.head,M(new THREE.TorusGeometry(.05,.015,8,12,Math.PI),"#241A0E"),0,-.14,.28);
-  rig.mouths.open=put(rig.head,sph(.05,"#5A2A2A"),0,-.12,.28);rig.mouths.open.scale.set(1,.7,.4);
-  rig.mouths.small=put(rig.head,M(new THREE.TorusGeometry(.04,.012,8,10,Math.PI),"#241A0E"),0,-.11,.28,0,0,Math.PI);
+  rig.mouths.line=put(rig.head,box(.1,.025,.02,"#241A0E"),0,-.12,.30);
+  rig.mouths.smile=put(rig.head,M(new THREE.TorusGeometry(.06,.015,8,12,Math.PI),"#241A0E"),0,-.12,.30,0,0,Math.PI);
+  rig.mouths.frown=put(rig.head,M(new THREE.TorusGeometry(.05,.015,8,12,Math.PI),"#241A0E"),0,-.14,.30);
+  rig.mouths.open=put(rig.head,sph(.05,"#5A2A2A"),0,-.12,.30);rig.mouths.open.scale.set(1,.7,.4);
+  rig.mouths.small=put(rig.head,M(new THREE.TorusGeometry(.04,.012,8,10,Math.PI),"#241A0E"),0,-.11,.30,0,0,Math.PI);
   
-  // Limbs
+  // ARMS WITH JOINTS
+  rig.shoulderL=put(root,sph(.08,shirt),-.33,1.1,0); // Joint
   rig.armL=new THREE.Group();rig.armL.position.set(-.33,1.1,0);root.add(rig.armL);
-  put(rig.armL,box(.13,.5,.13,shirt),0,-.25,0);rig.handL=put(rig.armL,sph(.08,skin),0,-.52,0);
+  put(rig.armL,box(.12,.45,.12,shirt),0,-.22,0);
+  rig.elbowL=put(rig.armL,sph(.06,skin),0,-.45,0); // Joint
+  rig.handL=put(rig.armL,sph(.07,skin),0,-.52,0);
+  
+  rig.shoulderR=put(root,sph(.08,shirt),.33,1.1,0); // Joint
   rig.armR=new THREE.Group();rig.armR.position.set(.33,1.1,0);root.add(rig.armR);
-  put(rig.armR,box(.13,.5,.13,shirt),0,-.25,0);rig.handR=put(rig.armR,sph(.08,skin),0,-.52,0);
+  put(rig.armR,box(.12,.45,.12,shirt),0,-.22,0);
+  rig.elbowR=put(rig.armR,sph(.06,skin),0,-.45,0); // Joint
+  rig.handR=put(rig.armR,sph(.07,skin),0,-.52,0);
+  
+  // LEGS WITH JOINTS
+  rig.hipL=put(root,sph(.08,pants),-.13,.55,0); // Joint
   rig.legL=new THREE.Group();rig.legL.position.set(-.13,.55,0);root.add(rig.legL);
-  put(rig.legL,box(.15,.5,.15,pants),0,-.25,0);put(rig.legL,box(.16,.09,.24,P.white),0,-.52,.04);
+  put(rig.legL,box(.14,.45,.14,pants),0,-.22,0);
+  rig.kneeL=put(rig.legL,sph(.07,pants),0,-.45,0); // Joint
+  put(rig.legL,box(.16,.09,.24,P.white),0,-.52,.04);
+  
+  rig.hipR=put(root,sph(.08,pants),.13,.55,0); // Joint
   rig.legR=new THREE.Group();rig.legR.position.set(.13,.55,0);root.add(rig.legR);
-  put(rig.legR,box(.15,.5,.15,pants),0,-.25,0);put(rig.legR,box(.16,.09,.24,P.white),0,-.52,.04);
+  put(rig.legR,box(.14,.45,.14,pants),0,-.22,0);
+  rig.kneeR=put(rig.legR,sph(.07,pants),0,-.45,0); // Joint
+  put(rig.legR,box(.16,.09,.24,P.white),0,-.52,.04);
   
   rig.brush=put(rig.handR,box(.04,.3,.04,P.teal),0,-.05,.1,.5);rig.brush.visible=false;
   rig.phone=put(rig.handR,box(.12,.22,.03,"#2A2A2A"),0,-.08,.05);rig.phone.visible=false;
@@ -346,7 +366,7 @@ function drawEndcard(c){if(!frozenBlur)makeFrozen();
   c.font=`italic 500 ${W*.032}px "EB Garamond",Georgia,serif`;c.fillStyle=P.gold;c.textAlign="center";
   const ql=wrap(c,e.question||"",W*.82);for(const l of ql){c.fillText(l,W/2,y);y+=W*.045}}
 
-// ============ MELODIC MUSIC ENGINE ============
+// ============ MELODIC MUSIC ENGINE (Fixed Scheduler) ============
 let AC=null,master=null,recDest=null;
 const audOn=()=>document.getElementById("aud").checked;
 function initAudio(){if(AC)return;AC=new (window.AudioContext||window.webkitAudioContext)();
@@ -359,12 +379,11 @@ function initAudio(){if(AC)return;AC=new (window.AudioContext||window.webkitAudi
 
 const N={C3:130.81,D3:146.83,E3:164.81,F3:174.61,G3:196.00,A3:220.00,B3:246.94,
          C4:261.63,D4:293.66,E4:329.63,F4:349.23,G4:392.00,A4:440.00,B4:493.88,C5:523.25};
-// Melodies for each mood
 const MELODIES={
-  playful:[N.C4,0,N.E4,.5,N.G4,.5,N.C5,1,N.B4,.5,N.G4,.5,N.E4,.5,N.C4,.5],
-  sad:[N.A3,0,N.C4,1,N.E4,1,N.D4,.5,N.C4,.5,N.B3,1,N.A3,1],
-  swell:[N.F3,0,N.A3,.5,N.C4,.5,N.F4,1,N.E4,.5,N.C4,.5,N.A3,.5,N.F3,.5],
-  nostalgic:[N.C4,0,N.E4,.5,N.G4,.5,N.B4,1,N.A4,.5,N.G4,.5,N.E4,.5,N.C4,.5]
+  playful:[{n:N.C4,d:.5},{n:N.E4,d:.5},{n:N.G4,d:.5},{n:N.C5,d:1},{n:N.B4,d:.5},{n:N.G4,d:.5},{n:N.E4,d:.5},{n:N.C4,d:.5}],
+  sad:[{n:N.A3,d:1},{n:N.C4,d:1},{n:N.E4,d:1},{n:N.D4,d:.5},{n:N.C4,d:.5},{n:N.B3,d:1},{n:N.A3,d:1}],
+  swell:[{n:N.F3,d:.5},{n:N.A3,d:.5},{n:N.C4,d:.5},{n:N.F4,d:1},{n:N.E4,d:.5},{n:N.C4,d:.5},{n:N.A3,d:.5},{n:N.F3,d:.5}],
+  nostalgic:[{n:N.C4,d:.5},{n:N.E4,d:.5},{n:N.G4,d:.5},{n:N.B4,d:1},{n:N.A4,d:.5},{n:N.G4,d:.5},{n:N.E4,d:.5},{n:N.C4,d:.5}]
 };
 const CHORDS={
   playful:[[N.C3,N.E3,N.G3],[N.G3,N.B3,N.D4],[N.A3,N.C4,N.E4],[N.F3,N.A3,N.C4]],
@@ -384,27 +403,28 @@ function playNote(freq,time,type,vel,dur){
 
 function playChord(notes,time,vel,dur){notes.forEach(n=>playNote(n,time,"triangle",vel*.3,dur))}
 
-let musicTimer=null;
-function startMusic(){if(!AC||!audOn())return;
-  const t0=AC.currentTime+.5;
-  let beat=0;
-  musicTimer=setInterval(()=>{
-    const t=AC.currentTime;
-    // Determine mood based on current story time
-    const storyT=(t-t0);
-    let mood="playful";
-    if(storyT>20&&storyT<27)mood="sad";
-    else if(storyT>=27&&storyT<44)mood="nostalgic";
-    else if(storyT>=44&&storyT<51)mood="swell";
-    else if(storyT>=51)mood="nostalgic";
-    
+let NOTES=[],nPtr=0;
+function buildScore(){NOTES=[];nPtr=0;
+  for(const s of STORY.shots){
+    const mood=/hook|montage|reversal/.test(s.id)?"playful":/separ|soft|twist/.test(s.id)?"sad":/reunion/.test(s.id)?"swell":"nostalgic";
     const mel=MELODIES[mood],chord=CHORDS[mood];
-    const melIdx=beat%mel.length,chorIdx=Math.floor(beat/4)%chord.length;
-    if(mel[melIdx+1]&&beat%2===0)playNote(mel[melIdx],t,"sine",.4,mel[melIdx+1]);
-    if(beat%4===0)playChord(chord[chorIdx],t,.5,1.8);
-    beat++;
-  },500)}
-function stopMusic(){if(musicTimer)clearInterval(musicTimer)}
+    const dur=s.end-s.start,bars=Math.max(1,Math.round(dur/2));
+    for(let b=0;b<bars;b++){const bt=s.start+b*2,chorIdx=b%4;
+      NOTES.push({t:bt,k:"chord",n:chord[chorIdx],d:1.9});
+      const melIdx=(b*2)%mel.length;
+      NOTES.push({t:bt,k:"melody",n:mel[melIdx].n,d:mel[melIdx].d});
+      if(mel[melIdx+1])NOTES.push({t:bt+mel[melIdx].d,k:"melody",n:mel[melIdx+1].n,d:mel[melIdx+1].d});
+    }
+  }
+  const le=Math.max(...STORY.shots.map(s=>s.end));
+  NOTES.push({t:le,k:"chord",n:[N.C3,N.E3,N.G3],d:3},{t:le,k:"melody",n:N.C4,d:2});
+  NOTES.sort((a,b)=>a.t-b.t)}
+
+function scheduleAhead(t){if(!AC||!audOn())return;
+  while(nPtr<NOTES.length&&NOTES[nPtr].t<=t+.2){const n=NOTES[nPtr],at=AC.currentTime+Math.max(0,n.t-t);
+    if(n.k==="melody")playNote(n.n,at,"sine",.4,n.d);
+    else if(n.k==="chord")playChord(n.n,at,.5,n.d);
+    nPtr++}}
 
 let playing=false,recording=false,startT=0,recorder=null,chunks=[],total=65,lastFrame=0,activeTalk=[],endFaded=false;
 function calcTotal(){total=Math.max(...STORY.shots.map(s=>s.end))+4}
@@ -459,6 +479,7 @@ function frame(now){
     for(const at of activeTalk){const ud=at.ch.userData;
       if(t>=ud.nextSyl){ud.nextSyl=t+.09+Math.random()*.13+(Math.random()<.12?.3:0);ud.mouthOpen=1;playNote(ud.pitch,AC.currentTime,"triangle",.1,.1)}
       ud.mouthOpen=Math.max(0,ud.mouthOpen-dt*9)}
+    if(playing)scheduleAhead(t);
     renderer.render(scene,camera);
     ctx.drawImage(renderer.domElement,0,0,W,H);
     if(vig){ctx.fillStyle=vig;ctx.fillRect(0,0,W,H)}
@@ -476,9 +497,9 @@ function frame(now){
 }
 function startPlay(){initAudio();if(AC.state==="suspended")AC.resume();
   if(audOn()){master.gain.cancelScheduledValues(AC.currentTime);master.gain.setValueAtTime(.0001,AC.currentTime);master.gain.exponentialRampToValueAtTime(.16,AC.currentTime+1.2)}else master.gain.value=0;
-  startMusic();endFaded=false;playing=true;startT=performance.now();
+  buildScore();endFaded=false;playing=true;startT=performance.now();
   document.getElementById("play").disabled=true;document.getElementById("rec").disabled=true}
-function stopAll(){playing=false;stopMusic();document.getElementById("play").disabled=false;document.getElementById("rec").disabled=false;
+function stopAll(){playing=false;document.getElementById("play").disabled=false;document.getElementById("rec").disabled=false;
   if(AC){master.gain.setTargetAtTime(.0001,AC.currentTime,.3)}
   if(recorder&&recorder.state==="recording"){recorder.stop();recording=false}}
 document.getElementById("play").onclick=()=>{startPlay();setStatus("Main…")}
