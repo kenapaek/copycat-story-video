@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Copycat Studio v6</title>
+<title>Copycat Studio v9</title>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
@@ -27,7 +27,7 @@
 </head>
 <body>
 <div id="wrap">
-  <h1>🪐 Copycat Studio v6</h1>
+  <h1>🪐 Copycat Studio v9</h1>
   <canvas id="out" width="720" height="1280"></canvas>
   <div id="bar"><div id="fill"></div></div>
   <div id="time">0.0s</div>
@@ -85,10 +85,48 @@ key.shadow.camera.near=.5;key.shadow.camera.far=18;scene.add(key);
 const fill=new THREE.DirectionalLight(0xBFD4E8,.12);fill.position.set(-3,1.5,3);scene.add(fill);
 const rim=new THREE.DirectionalLight(0xFFD9A0,.16);rim.position.set(0,3,-4);scene.add(rim);
 const night=new THREE.PointLight(0xBFD8FF,0,6);night.position.set(.4,1.5,1);scene.add(night);
-function M(g,c,o){const m=new THREE.MeshStandardMaterial({color:new THREE.Color(c).convertSRGBToLinear(),roughness:.95,metalness:0});if(o)Object.assign(m,o);return new THREE.Mesh(g,m)}
-function box(w,h,d,c,o){return M(new THREE.BoxGeometry(w,h,d),c,o)}
-function sph(r,c,o){return M(new THREE.SphereGeometry(r,12,10),c,o)} // Higher poly sphere for smoother look
-function cyl(rt,rb,h,c,seg){return M(new THREE.CylinderGeometry(rt,rb,h,seg||10),c)}
+
+// --- TEXTURE GENERATORS ---
+function makeTex(w, h, drawFn) {
+    const c = document.createElement('canvas'); c.width=w; c.height=h;
+    drawFn(c.getContext('2d'), w, h);
+    const t = new THREE.CanvasTexture(c);
+    t.wrapS = t.wrapT = THREE.RepeatWrapping;
+    t.encoding = THREE.sRGBEncoding;
+    return t;
+}
+const woodTex = makeTex(128, 128, (ctx, w, h) => {
+    ctx.fillStyle = '#B5793F'; ctx.fillRect(0,0,w,h);
+    ctx.strokeStyle = '#8A5A2B'; ctx.lineWidth = 2; ctx.globalAlpha = 0.4;
+    for(let i=0; i<15; i++) { ctx.beginPath(); ctx.moveTo(0, Math.random()*h); ctx.bezierCurveTo(w/3, Math.random()*h, 2*w/3, Math.random()*h, w, Math.random()*h); ctx.stroke(); }
+    ctx.globalAlpha = 1;
+});
+const leafTex = makeTex(64, 64, (ctx, w, h) => {
+    ctx.fillStyle = '#7BA05B'; ctx.fillRect(0,0,w,h);
+    ctx.fillStyle = '#5F7F4F';
+    for(let i=0; i<20; i++) { ctx.beginPath(); ctx.arc(Math.random()*w, Math.random()*h, 4+Math.random()*6, 0, 7); ctx.fill(); }
+});
+const ceramicTex = makeTex(64, 64, (ctx, w, h) => {
+    ctx.fillStyle = '#F7F3EA'; ctx.fillRect(0,0,w,h);
+    ctx.fillStyle = '#E9C9A8'; ctx.globalAlpha = 0.1;
+    for(let i=0; i<50; i++) { ctx.fillRect(Math.random()*w, Math.random()*h, 2, 2); }
+    ctx.globalAlpha = 1;
+});
+
+// --- ROBUST MATERIAL FUNCTION (Fixes the vanishing tree/sink) ---
+function M(g, c, o) {
+    let mat;
+    if (typeof c === 'string') {
+        mat = new THREE.MeshStandardMaterial({ color: new THREE.Color(c).convertSRGBToLinear(), roughness: 0.95, metalness: 0 });
+    } else {
+        mat = new THREE.MeshStandardMaterial({ map: c, roughness: 0.9, metalness: 0 });
+    }
+    if (o) Object.assign(mat, o);
+    return new THREE.Mesh(g, mat);
+}
+function box(w,h,d,c,o){ return M(new THREE.BoxGeometry(w,h,d), c, o); }
+function sph(r,c,o){ return M(new THREE.SphereGeometry(r,12,10), c, o); }
+function cyl(rt,rb,h,c,seg){ return M(new THREE.CylinderGeometry(rt,rb,h,seg||10), c); }
 function put(p,m,x,y,z,rx,ry,rz){m.position.set(x,y,z);if(rx)m.rotation.x=rx;if(ry)m.rotation.y=ry;if(rz)m.rotation.z=rz;p.add(m);return m}
 function tex(w,h,fn){const c=document.createElement("canvas");c.width=w;c.height=h;fn(c.getContext("2d"),w,h);const t=new THREE.CanvasTexture(c);t.encoding=THREE.sRGBEncoding;return t}
 const blobTex=tex(128,128,(c)=>{const g=c.createRadialGradient(64,64,8,64,64,62);g.addColorStop(0,"rgba(40,25,12,.42)");g.addColorStop(1,"rgba(40,25,12,0)");c.fillStyle=g;c.fillRect(0,0,128,128)});
@@ -98,73 +136,80 @@ function buildSets(){
   // BATHROOM
   let g=new THREE.Group();
   put(g,box(12,6,.2,P.wall),0,3,-2.2);put(g,box(.2,6,10,P.cream),-3.4,3,0);put(g,box(12,.2,10,P.cream),0,-.05,0);
-  put(g,box(3.4,.45,.9,P.white),0,.5,1.6);
-  put(g,M(new THREE.TorusGeometry(.5,.05,8,24),P.white),0,.74,1.6,Math.PI/2);
-  put(g,M(new THREE.CircleGeometry(.48,20),P.white),0,.70,1.6,-Math.PI/2);
+  // Fixed Sink: Countertop + Bowl Basin + Rim
+  put(g, box(3.4, 0.1, 0.9, ceramicTex), 0, 0.5, 1.6);
+  put(g, M(new THREE.SphereGeometry(0.45, 16, 12, 0, Math.PI*2, 0, Math.PI/2), P.white), 0, 0.5, 1.6, Math.PI, 0, 0);
+  put(g, M(new THREE.TorusGeometry(0.45, 0.06, 8, 24), P.white), 0, 0.5, 1.6, Math.PI/2, 0, 0);
   // Mirror
-  put(g,box(1.2,1.6,.05,P.woodD),0,2.2,-2.1);put(g,box(1.1,1.5,.06,"#D0E8F0"),0,2.2,-2.05);
+  put(g,box(1.2,1.6,.05,woodTex),0,2.2,-2.1);put(g,box(1.1,1.5,.06,"#D0E8F0"),0,2.2,-2.05);
   // Towel
-  put(g,box(.6,1.2,.08,P.teal),1.8,1.8,-2.1);put(g,box(.6,.05,.1,P.woodD),1.8,2.4,-2.1);
+  put(g,box(.6,1.2,.08,P.teal),1.8,1.8,-2.1);put(g,box(.6,.05,.1,woodTex),1.8,2.4,-2.1);
   // Shelf props
   for(let i=0;i<7;i++)put(g,box(.16,2.6,.06,i%2?P.white:P.sage),-2.2+i*.17,1.6,.2);
-  put(g,box(1.4,.08,.4,P.woodD),-1.6,2.1,-2);put(g,sph(.16,P.sage),-1.9,2.3,-2);put(g,cyl(.1,.12,.2,P.terra),-1.9,2.15,-2);
-  // Toothpaste
-  put(g,cyl(.05,.05,.2,P.white),-1.4,2.25,-2);put(g,box(.06,.06,.06,P.teal),-1.4,2.35,-2);
-  put(g,cyl(.07,.07,.22,P.stripe),-1.15,2.25,-2);put(g,cyl(.07,.07,.22,P.terra),-.9,2.25,-2);
+  put(g,box(1.4,.08,.4,woodTex),-1.6,2.1,-2);put(g,sph(.16,P.sage),-1.9,2.3,-2);put(g,cyl(.1,.12,.2,ceramicTex),-1.9,2.15,-2);
+  put(g,cyl(.05,.05,.2,ceramicTex),-1.4,2.25,-2);put(g,box(.06,.06,.06,P.teal),-1.4,2.35,-2);
+  put(g,cyl(.07,.07,.22,ceramicTex),-1.15,2.25,-2);put(g,cyl(.07,.07,.22,ceramicTex),-.9,2.25,-2);
   put(g,box(.5,.7,.05,P.mustard),2,1.4,-2.1);put(g,box(1.2,1.8,.1,P.cream),2.8,1.6,-2.15);
   sets.bathroom={g,bg:"#E9C9A8",amb:.28,hemi:.42,key:.85};
 
   // KITCHEN
   g=new THREE.Group();
-  put(g,box(12,6,.2,P.cream),0,3,-2.4);put(g,box(12,.2,10,P.wood),0,-.05,0);
-  put(g,box(2.6,1.8,.1,P.grass),1.1,2.3,-2.3);put(g,box(2.7,.08,.12,P.white),1.1,3.2,-2.25);put(g,box(2.7,.08,.12,P.white),1.1,1.4,-2.25);
+  put(g,box(12,6,.2,P.cream),0,3,-2.4);put(g,box(12,.2,10,woodTex),0,-.05,0);
+  put(g,box(2.6,1.8,.1,P.grass),1.1,2.3,-2.3);
+  put(g,box(2.7,.08,.12,P.white),1.1,3.2,-2.25);put(g,box(2.7,.08,.12,P.white),1.1,1.4,-2.25);
   put(g,box(.08,1.8,.12,P.white),1.1,2.3,-2.25);put(g,box(.08,1.8,.12,P.white),-.2,2.3,-2.25);put(g,box(.08,1.8,.12,P.white),2.4,2.3,-2.25);
   const check=tex(64,64,(c)=>{c.fillStyle="#C4502E";c.fillRect(0,0,64,64);c.fillStyle="#F4E9D8";for(let y=0;y<4;y++)for(let x=0;x<4;x++)if((x+y)%2)c.fillRect(x*16,y*16,16,16)});
   put(g,M(new THREE.PlaneGeometry(1.2,2.6),{map:check}),-2.6,2,-2.2);
-  put(g,box(3,.9,.8,P.wood),-1,.45,-1.5);put(g,M(new THREE.TorusGeometry(.22,.05,8,16,Math.PI),P.gold),-1.4,1.05,-1.5);
-  put(g,box(3.6,.14,1.1,P.wood),0,.62,1.5);
+  // Table with round legs
+  put(g,box(3,.08,.8,woodTex),-1,.9,-1.5);
+  put(g,cyl(.08,.08,.9,woodTex),-2.2,.45,-1.8);put(g,cyl(.08,.08,.9,woodTex),.2,.45,-1.8);
+  put(g,cyl(.08,.08,.9,woodTex),-2.2,.45,-1.2);put(g,cyl(.08,.08,.9,woodTex),.2,.45,-1.2);
+  put(g,M(new THREE.TorusGeometry(.22,.05,8,16,Math.PI),P.gold),-1.4,1.05,-1.5);
+  put(g,box(3.6,.14,1.1,woodTex),0,.62,1.5);
   // Fruit bowl
-  put(g,cyl(.3,.25,.15,P.white),1.5,.7,1.4);put(g,sph(.12,"#C4302E"),1.4,.85,1.4);put(g,sph(.12,"#E8B33C"),1.6,.85,1.45);put(g,sph(.12,"#7BA05B"),1.5,.9,1.35);
+  put(g,cyl(.3,.25,.15,ceramicTex),1.5,.7,1.4);put(g,sph(.12,"#C4302E"),1.4,.85,1.4);put(g,sph(.12,"#E8B33C"),1.6,.85,1.45);put(g,sph(.12,"#7BA05B"),1.5,.9,1.35);
   const cb=tex(128,160,(c)=>{c.fillStyle="#C4302E";c.fillRect(0,0,128,160);c.fillStyle="#E8B33C";c.beginPath();c.arc(64,90,34,0,7);c.fill();c.fillStyle="#241A0E";c.font="bold 20px Georgia";c.textAlign="center";c.fillText("SUNNY",64,30);c.fillText("O'S",64,52);c.fillStyle="#fff";c.beginPath();c.arc(54,86,4,0,7);c.arc(74,86,4,0,7);c.fill()});
   put(g,M(new THREE.BoxGeometry(.5,.7,.18),{map:cb}),1.15,1.05,1.45);
-  put(g,cyl(.32,.24,.2,P.white),.5,.78,1.4);put(g,M(new THREE.TorusGeometry(.3,.04,8,20),P.stripe),.5,.88,1.4,Math.PI/2);
-  put(g,cyl(.26,.2,.18,P.white),-.6,.77,1.4);put(g,M(new THREE.TorusGeometry(.24,.035,8,20),P.stripe),-.6,.86,1.4,Math.PI/2);
+  put(g,cyl(.32,.24,.2,ceramicTex),.5,.78,1.4);put(g,M(new THREE.TorusGeometry(.3,.04,8,20),P.stripe),.5,.88,1.4,Math.PI/2);
+  put(g,cyl(.26,.2,.18,ceramicTex),-.6,.77,1.4);put(g,M(new THREE.TorusGeometry(.24,.035,8,20),P.stripe),-.6,.86,1.4,Math.PI/2);
   sets.kitchen={g,bg:"#F4E9D8",amb:.32,hemi:.46,key:.9};
 
   // HALLWAY
   g=new THREE.Group();
   put(g,box(.2,6,14,P.wall),-2.4,3,-3);put(g,box(.2,6,14,P.wall),2.4,3,-3);
-  put(g,box(6,.2,14,P.wood),0,-.05,-3);put(g,box(6,6,.2,P.cream),0,3,-9);
+  put(g,box(6,.2,14,woodTex),0,-.05,-3);put(g,box(6,6,.2,P.cream),0,3,-9);
   const rug=tex(128,512,(c)=>{c.fillStyle="#F4E9D8";c.fillRect(0,0,128,512);c.fillStyle="#3E8E8C";c.fillRect(6,0,8,512);c.fillRect(114,0,8,512);c.fillStyle="#5B87A0";for(let i=0;i<6;i++){c.save();c.translate(64,50+i*82);c.rotate(Math.PI/4);c.fillRect(-22,-22,44,44);c.restore();c.fillStyle="#C4502E";c.beginPath();c.arc(64,50+i*82,8,0,7);c.fill();c.fillStyle="#5B87A0"}});
   put(g,M(new THREE.PlaneGeometry(1.8,9),{map:rug}),0,.06,-2,-Math.PI/2);
   const pic=tex(64,80,(c)=>{c.fillStyle="#F4E9D8";c.fillRect(0,0,64,80);c.fillStyle="#C4502E";c.fillRect(26,30,12,30);c.fillStyle="#4A2E1E";c.beginPath();c.arc(32,24,8,0,7);c.fill()});
   [[-2.28,1.9,-.2],[-2.28,1.6,-1.2],[-2.28,2.1,-2.2],[2.28,1.9,-.6],[2.28,1.6,-1.8]].forEach(p=>{put(g,M(new THREE.BoxGeometry(.06,.7,.55),{map:pic}),p[0],p[1],p[2])});
-  put(g,box(.7,.08,.4,P.wood),-2,.9,.6);put(g,cyl(.05,.07,.5,P.terra),-2,.6,.6);
-  put(g,cyl(.16,.22,.25,P.cream),-2,1.25,.6);
-  // Coat rack
-  put(g,cyl(.05,.05,2,P.woodD),2,.9,1);put(g,box(.1,.1,.1,P.woodD),2,1.9,1);
+  put(g,box(.7,.08,.4,woodTex),-2,.9,.6);put(g,cyl(.05,.07,.5,ceramicTex),-2,.6,.6);
+  put(g,cyl(.16,.22,.25,ceramicTex),-2,1.25,.6);
+  put(g,cyl(.05,.05,2,woodTex),2,.9,1);put(g,sph(.1,woodTex),2,1.9,1);
   put(g,box(1.2,2.6,.15,P.white),0,1.3,-8.9);
   sets.hallway={g,bg:"#E9C9A8",amb:.28,hemi:.42,key:.85};
 
   // DOOR
   g=new THREE.Group();
-  put(g,box(12,.2,10,P.cream),0,-.05,0);put(g,box(12,6,.2,P.wall),0,3,-2);
-  put(g,box(1.1,2.5,.12,"#2E6B5E"),-1.15,1.25,-.8,0,.45);
-  put(g,box(.08,.2,.08,P.gold),-.7,1.2,-.7); // Doorknob
+  put(g,box(12,.2,10,woodTex),0,-.05,0);put(g,box(12,6,.2,P.wall),0,3,-2);
+  put(g,box(1.1,2.5,.12,woodTex),-1.15,1.25,-.8,0,.45);
+  put(g,cyl(.04,.04,.15,P.gold,8),-.7,1.2,-.65,0,0,Math.PI/2);
   put(g,box(8,.1,5,P.grass),0,-.02,-4);
-  for(let i=0;i<9;i++)put(g,box(.08,.6,.06,P.white),-2.8+i*.6,.3,-3);
+  for(let i=0;i<9;i++)put(g,cyl(.04,.04,.6,P.white,6),-2.8+i*.6,.3,-3);
   put(g,box(5.5,.06,.06,P.white),0,.5,-3);
-  put(g,cyl(.12,.16,.8,P.woodD),2.6,.4,-3.4);put(g,sph(.7,P.sage),2.6,1.3,-3.4);
-  put(g,cyl(.16,.2,.3,P.terra),-1.9,.15,-.8);put(g,sph(.22,P.sage),-1.9,.45,-.8);put(g,sph(.06,"#C4302E"),-1.8,.55,-.75);
+  // Tree with soft leaf cluster (Fixed!)
+  put(g,cyl(.12,.16,.9,woodTex),2.6,.45,-3.4);
+  put(g,sph(0.4, leafTex),2.6,1.1,-3.4);
+  put(g,sph(0.35, leafTex),2.3,1.2,-3.3);
+  put(g,sph(0.3, leafTex),2.9,1.2,-3.5);
+  put(g,cyl(.16,.2,.3,ceramicTex),-1.9,.15,-.8);put(g,sph(.22,P.sage),-1.9,.45,-.8);put(g,sph(.06,"#C4302E"),-1.8,.55,-.75);
   sets.door={g,bg:"#DCE8C8",amb:.36,hemi:.5,key:.95};
 
   // NIGHT ROOM
   g=new THREE.Group();
-  put(g,box(12,6,.2,"#6B5A4A"),0,3,-2);put(g,box(12,.2,10,"#5A4A3A"),0,-.05,0);
-  put(g,box(1.6,.5,1,P.woodD),-1.4,.25,-.8);put(g,box(1.5,.18,.9,P.cream),-1.4,.55,-.8);put(g,box(.5,.14,.4,P.white),-1.8,.68,-.8);
-  // Pillow & Blanket
+  put(g,box(12,6,.2,"#6B5A4A"),0,3,-2);put(g,box(12,.2,10,woodTex),0,-.05,0);
+  put(g,box(1.6,.5,1,woodTex),-1.4,.25,-.8);put(g,box(1.5,.18,.9,P.cream),-1.4,.55,-.8);put(g,box(.5,.14,.4,P.white),-1.8,.68,-.8);
   put(g,box(.6,.15,.4,P.white),-1.4,.65,-.6);put(g,box(1.4,.1,.8,P.teal),-1.4,.6,-.5);
-  put(g,box(1,.08,.5,P.wood),1.3,.9,-1);put(g,cyl(.04,.05,.9,P.woodD),1.3,.45,-1);
+  put(g,box(1,.08,.5,woodTex),1.3,.9,-1);put(g,cyl(.04,.05,.9,woodTex),1.3,.45,-1);
   put(g,box(1.2,1,.1,"#2A3540"),1.2,2.2,-1.9);
   const flag=["#C4502E","#3E8E8C","#E8B33C","#7BA05B","#9B7FC4"];
   for(let i=0;i<5;i++){const t=M(new THREE.ConeGeometry(.12,.25,3),flag[i]);put(g,t,-1+i*.5,2.9,-1.8,Math.PI)}
@@ -172,13 +217,10 @@ function buildSets(){
 
   // OUTSIDE RAIN
   g=new THREE.Group();
-  put(g,box(14,.2,10,"#6F8F5F"),0,-.05,-1);
-  for(let i=0;i<13;i++)put(g,box(.08,.6,.06,P.white),-3.4+i*.55,.3,-3);
+  put(g,M(new THREE.PlaneGeometry(14,10),{map:leafTex,color:0x6F8F5F}),0,-.05,-1);
+  for(let i=0;i<13;i++)put(g,cyl(.04,.04,.6,P.white,6),-3.4+i*.55,.3,-3);
   put(g,box(7,.06,.06,P.white),0,.5,-3);
-  put(g,cyl(.12,.16,.9,P.woodD),2.8,.45,-3.6);put(g,sph(.75,"#5F7F4F"),2.8,1.4,-3.6);
-  put(g,M(new THREE.CircleGeometry(.7,20),"#7FA0B0",{transparent:true,opacity:.7}),-.5,.02,1.2,-Math.PI/2);
-  // Mailbox
-  put(g,box(.3,.4,.2,P.teal),2.5,.5,-1);put(g,cyl(.05,.05,.5,P.woodD),2.5,.25,-1);
+  put(g,box(.3,.4,.2,P.teal),2.5,.5,-1);put(g,cyl(.05,.05,.5,woodTex),2.5,.25,-1);
   sets.outside_rain={g,bg:"#9FB4A8",amb:.26,hemi:.36,key:.6};
 
   for(const k in sets){sets[k].g.visible=false;
@@ -191,72 +233,75 @@ const chars={};
 function buildChar(cfg){
   const root=new THREE.Group(),rig={};
   const skin=cfg.skin||P.skin,hairC=cfg.hairColor||P.hair,shirt=cfg.shirt||P.mustard,pants=cfg.pants||"#4A6B8A";
-  
-  // TORSO
   rig.torso=put(root,box(.56,.62,.34,shirt),0,.86,0);
   if((cfg.shirtStyle||"plain")==="collar"){put(root,cyl(.15,.16,.07,P.white),0,1.2,0);put(root,cyl(.15,.16,.05,"#3A5A7A"),0,1.16,0);
     for(let i=0;i<4;i++)put(root,sph(.025,P.white),0,.62+i*.14,.18)}
   if(cfg.shirtStyle==="stripes"){for(let i=0;i<3;i++)put(root,box(.57,.06,.35,P.stripe),0,.7+i*.18,0)}
-  
-  // HEAD (Rounded)
   rig.head=new THREE.Group();rig.head.position.set(0,1.42,0);root.add(rig.head);
-  put(rig.head,sph(.32,skin),0,.05,0); // Round face
+  put(rig.head,sph(.32,skin),0,.05,0);
   
-  // HAIR (Softer helmet shape)
+  // --- SOFT HAIR (Moved UP so it doesn't cover eyes) ---
+  const hairMat = new THREE.MeshStandardMaterial({color: new THREE.Color(hairC).convertSRGBToLinear(), roughness: 0.95, metalness: 0});
   const hs=cfg.hair||"bob";
-  put(rig.head,box(.66,.18,.58,hairC),0,.32,0); // Top
-  put(rig.head,box(.66,.35,.12,hairC),0,.12,-.26); // Back
-  if(hs==="bob"||hs==="long"){put(rig.head,box(.12,.45,.52,hairC),-.32,.08,0);put(rig.head,box(.12,.45,.52,hairC),.32,.08,0)} // Sides
-  if(hs==="long")put(rig.head,box(.62,.6,.12,hairC),0,-.25,-.26);
-  if(hs==="bun")put(rig.head,sph(.14,hairC),0,.42,-.15);
   
-  // EYES (Fixed position on sphere surface)
+  const dome = new THREE.Mesh(new THREE.SphereGeometry(0.36, 16, 12), hairMat);
+  dome.position.set(0, 0.28, -0.05); // MOVED UP
+  dome.scale.set(1.0, 0.8, 1.1);
+  rig.head.add(dome);
+  
+  const bangs = new THREE.Mesh(new THREE.SphereGeometry(0.22, 12, 8), hairMat);
+  bangs.position.set(0, 0.35, 0.20); // MOVED UP
+  bangs.scale.set(1.4, 0.3, 0.9);
+  rig.head.add(bangs);
+  
+  if(hs==="bob"||hs==="long"){
+      const sideGeo = new THREE.SphereGeometry(0.16, 10, 8);
+      const sideL = new THREE.Mesh(sideGeo, hairMat);
+      sideL.position.set(-0.34, 0.05, 0);
+      sideL.scale.set(0.7, 1.4, 1.0);
+      rig.head.add(sideL);
+      
+      const sideR = new THREE.Mesh(sideGeo, hairMat);
+      sideR.position.set(0.34, 0.05, 0);
+      sideR.scale.set(0.7, 1.4, 1.0);
+      rig.head.add(sideR);
+  }
+  if(hs==="long"){
+      const back = new THREE.Mesh(new THREE.SphereGeometry(0.2, 10, 8), hairMat);
+      back.position.set(0, -0.1, -0.25);
+      back.scale.set(1.2, 1.5, 0.8);
+      rig.head.add(back);
+  }
+  if(hs==="bun"){
+      const bun = new THREE.Mesh(new THREE.SphereGeometry(0.15, 10, 8), hairMat);
+      bun.position.set(0, 0.4, -0.2);
+      rig.head.add(bun);
+  }
+
   rig.eyeL=put(rig.head,sph(.05,"#241A0E"),-.12,.05,.30);rig.eyeR=put(rig.head,sph(.05,"#241A0E"),.12,.05,.30);
   rig.eyeL.scale.z=.4;rig.eyeR.scale.z=.4;
   rig.browL=put(rig.head,box(.14,.035,.03,"#241A0E"),-.12,.18,.30);
   rig.browR=put(rig.head,box(.14,.035,.03,"#241A0E"),.12,.18,.30);
-  
-  // MOUTHS
   rig.mouths={};
   rig.mouths.line=put(rig.head,box(.1,.025,.02,"#241A0E"),0,-.12,.30);
   rig.mouths.smile=put(rig.head,M(new THREE.TorusGeometry(.06,.015,8,12,Math.PI),"#241A0E"),0,-.12,.30,0,0,Math.PI);
   rig.mouths.frown=put(rig.head,M(new THREE.TorusGeometry(.05,.015,8,12,Math.PI),"#241A0E"),0,-.14,.30);
   rig.mouths.open=put(rig.head,sph(.05,"#5A2A2A"),0,-.12,.30);rig.mouths.open.scale.set(1,.7,.4);
   rig.mouths.small=put(rig.head,M(new THREE.TorusGeometry(.04,.012,8,10,Math.PI),"#241A0E"),0,-.11,.30,0,0,Math.PI);
-  
-  // ARMS WITH JOINTS
-  rig.shoulderL=put(root,sph(.08,shirt),-.33,1.1,0); // Joint
-  rig.armL=new THREE.Group();rig.armL.position.set(-.33,1.1,0);root.add(rig.armL);
-  put(rig.armL,box(.12,.45,.12,shirt),0,-.22,0);
-  rig.elbowL=put(rig.armL,sph(.06,skin),0,-.45,0); // Joint
-  rig.handL=put(rig.armL,sph(.07,skin),0,-.52,0);
-  
-  rig.shoulderR=put(root,sph(.08,shirt),.33,1.1,0); // Joint
-  rig.armR=new THREE.Group();rig.armR.position.set(.33,1.1,0);root.add(rig.armR);
-  put(rig.armR,box(.12,.45,.12,shirt),0,-.22,0);
-  rig.elbowR=put(rig.armR,sph(.06,skin),0,-.45,0); // Joint
-  rig.handR=put(rig.armR,sph(.07,skin),0,-.52,0);
-  
-  // LEGS WITH JOINTS
-  rig.hipL=put(root,sph(.08,pants),-.13,.55,0); // Joint
-  rig.legL=new THREE.Group();rig.legL.position.set(-.13,.55,0);root.add(rig.legL);
-  put(rig.legL,box(.14,.45,.14,pants),0,-.22,0);
-  rig.kneeL=put(rig.legL,sph(.07,pants),0,-.45,0); // Joint
-  put(rig.legL,box(.16,.09,.24,P.white),0,-.52,.04);
-  
-  rig.hipR=put(root,sph(.08,pants),.13,.55,0); // Joint
-  rig.legR=new THREE.Group();rig.legR.position.set(.13,.55,0);root.add(rig.legR);
-  put(rig.legR,box(.14,.45,.14,pants),0,-.22,0);
-  rig.kneeR=put(rig.legR,sph(.07,pants),0,-.45,0); // Joint
-  put(rig.legR,box(.16,.09,.24,P.white),0,-.52,.04);
-  
+  rig.shoulderL=put(root,sph(.08,shirt),-.33,1.1,0);rig.armL=new THREE.Group();rig.armL.position.set(-.33,1.1,0);root.add(rig.armL);
+  put(rig.armL,box(.12,.45,.12,shirt),0,-.22,0);rig.elbowL=put(rig.armL,sph(.06,skin),0,-.45,0);rig.handL=put(rig.armL,sph(.07,skin),0,-.52,0);
+  rig.shoulderR=put(root,sph(.08,shirt),.33,1.1,0);rig.armR=new THREE.Group();rig.armR.position.set(.33,1.1,0);root.add(rig.armR);
+  put(rig.armR,box(.12,.45,.12,shirt),0,-.22,0);rig.elbowR=put(rig.armR,sph(.06,skin),0,-.45,0);rig.handR=put(rig.armR,sph(.07,skin),0,-.52,0);
+  rig.hipL=put(root,sph(.08,pants),-.13,.55,0);rig.legL=new THREE.Group();rig.legL.position.set(-.13,.55,0);root.add(rig.legL);
+  put(rig.legL,box(.14,.45,.14,pants),0,-.22,0);rig.kneeL=put(rig.legL,sph(.07,pants),0,-.45,0);put(rig.legL,box(.16,.09,.24,P.white),0,-.52,.04);
+  rig.hipR=put(root,sph(.08,pants),.13,.55,0);rig.legR=new THREE.Group();rig.legR.position.set(.13,.55,0);root.add(rig.legR);
+  put(rig.legR,box(.14,.45,.14,pants),0,-.22,0);rig.kneeR=put(rig.legR,sph(.07,pants),0,-.45,0);put(rig.legR,box(.16,.09,.24,P.white),0,-.52,.04);
   rig.brush=put(rig.handR,box(.04,.3,.04,P.teal),0,-.05,.1,.5);rig.brush.visible=false;
   rig.phone=put(rig.handR,box(.12,.22,.03,"#2A2A2A"),0,-.08,.05);rig.phone.visible=false;
   rig.spoon=put(rig.handR,box(.03,.25,.03,"#9AA0A8"),0,-.05,.08,.6);rig.spoon.visible=false;
   rig.cbox=put(root,box(.4,.55,.15,"#C4302E"),0,1,.5);rig.cbox.visible=false;
   rig.bag=put(root,box(.4,.5,.15,cfg.bag||P.teal),0,.95,-.26);rig.bag.visible=false;
   put(root,box(.06,.5,.05,cfg.bag||P.teal),.15,1.05,-.1,.3);
-  
   const blob=new THREE.Mesh(new THREE.PlaneGeometry(1.5,1.1),new THREE.MeshBasicMaterial({map:blobTex,transparent:true,depthWrite:false}));
   blob.rotation.x=-Math.PI/2;blob.position.y=.03;blob.castShadow=false;blob.receiveShadow=false;blob.renderOrder=2;root.add(blob);
   root.scale.setScalar(cfg.height||1);
@@ -366,7 +411,6 @@ function drawEndcard(c){if(!frozenBlur)makeFrozen();
   c.font=`italic 500 ${W*.032}px "EB Garamond",Georgia,serif`;c.fillStyle=P.gold;c.textAlign="center";
   const ql=wrap(c,e.question||"",W*.82);for(const l of ql){c.fillText(l,W/2,y);y+=W*.045}}
 
-// ============ MELODIC MUSIC ENGINE (Fixed Scheduler) ============
 let AC=null,master=null,recDest=null;
 const audOn=()=>document.getElementById("aud").checked;
 function initAudio(){if(AC)return;AC=new (window.AudioContext||window.webkitAudioContext)();
