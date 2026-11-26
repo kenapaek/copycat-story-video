@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Copycat Studio</title>
+<title>Copycat Studio v5</title>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,500;0,600;1,500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <style>
@@ -95,20 +95,26 @@ const blobTex=tex(128,128,(c)=>{const g=c.createRadialGradient(64,64,8,64,64,62)
 
 const sets={};
 function buildSets(){
+  // BATHROOM
   let g=new THREE.Group();
   put(g,box(12,6,.2,P.wall),0,3,-2.2);put(g,box(.2,6,10,P.cream),-3.4,3,0);put(g,box(12,.2,10,P.cream),0,-.05,0);
   put(g,box(3.4,.45,.9,P.white),0,.5,1.6);
   put(g,M(new THREE.TorusGeometry(.5,.05,8,24),P.white),0,.74,1.6,Math.PI/2);
   put(g,M(new THREE.CircleGeometry(.48,20),P.white),0,.70,1.6,-Math.PI/2);
+  // Mirror
+  put(g,box(1.2,1.6,.05,P.woodD),0,2.2,-2.1);put(g,box(1.1,1.5,.06,"#D0E8F0"),0,2.2,-2.05);
+  // Towel
+  put(g,box(.6,1.2,.08,P.teal),1.8,1.8,-2.1);put(g,box(.6,.05,.1,P.woodD),1.8,2.4,-2.1);
+  // Shelf props
   for(let i=0;i<7;i++)put(g,box(.16,2.6,.06,i%2?P.white:P.sage),-2.2+i*.17,1.6,.2);
   put(g,box(1.4,.08,.4,P.woodD),-1.6,2.1,-2);put(g,sph(.16,P.sage),-1.9,2.3,-2);put(g,cyl(.1,.12,.2,P.terra),-1.9,2.15,-2);
-  put(g,cyl(.07,.07,.22,P.stripe),-1.4,2.25,-2);put(g,cyl(.07,.07,.22,P.terra),-1.15,2.25,-2);
+  // Toothpaste
+  put(g,cyl(.05,.05,.2,P.white),-1.4,2.25,-2);put(g,box(.06,.06,.06,P.teal),-1.4,2.35,-2);
+  put(g,cyl(.07,.07,.22,P.stripe),-1.15,2.25,-2);put(g,cyl(.07,.07,.22,P.terra),-.9,2.25,-2);
   put(g,box(.5,.7,.05,P.mustard),2,1.4,-2.1);put(g,box(1.2,1.8,.1,P.cream),2.8,1.6,-2.15);
-  // HERO PROP: Towel rack & towel
-  put(g,cyl(.02,.02,.6,P.white,6),-3.2,1.6,-1.5,0,0,Math.PI/2);
-  put(g,box(.4,.5,.05,P.white),-3.2,1.3,-1.5);
   sets.bathroom={g,bg:"#E9C9A8",amb:.28,hemi:.42,key:.85};
-  
+
+  // KITCHEN
   g=new THREE.Group();
   put(g,box(12,6,.2,P.cream),0,3,-2.4);put(g,box(12,.2,10,P.wood),0,-.05,0);
   put(g,box(2.6,1.8,.1,P.grass),1.1,2.3,-2.3);put(g,box(2.7,.08,.12,P.white),1.1,3.2,-2.25);put(g,box(2.7,.08,.12,P.white),1.1,1.4,-2.25);
@@ -117,15 +123,15 @@ function buildSets(){
   put(g,M(new THREE.PlaneGeometry(1.2,2.6),{map:check}),-2.6,2,-2.2);
   put(g,box(3,.9,.8,P.wood),-1,.45,-1.5);put(g,M(new THREE.TorusGeometry(.22,.05,8,16,Math.PI),P.gold),-1.4,1.05,-1.5);
   put(g,box(3.6,.14,1.1,P.wood),0,.62,1.5);
+  // Fruit bowl
+  put(g,cyl(.3,.25,.15,P.white),1.5,.7,1.4);put(g,sph(.12,"#C4302E"),1.4,.85,1.4);put(g,sph(.12,"#E8B33C"),1.6,.85,1.45);put(g,sph(.12,"#7BA05B"),1.5,.9,1.35);
   const cb=tex(128,160,(c)=>{c.fillStyle="#C4302E";c.fillRect(0,0,128,160);c.fillStyle="#E8B33C";c.beginPath();c.arc(64,90,34,0,7);c.fill();c.fillStyle="#241A0E";c.font="bold 20px Georgia";c.textAlign="center";c.fillText("SUNNY",64,30);c.fillText("O'S",64,52);c.fillStyle="#fff";c.beginPath();c.arc(54,86,4,0,7);c.arc(74,86,4,0,7);c.fill()});
   put(g,M(new THREE.BoxGeometry(.5,.7,.18),{map:cb}),1.15,1.05,1.45);
   put(g,cyl(.32,.24,.2,P.white),.5,.78,1.4);put(g,M(new THREE.TorusGeometry(.3,.04,8,20),P.stripe),.5,.88,1.4,Math.PI/2);
   put(g,cyl(.26,.2,.18,P.white),-.6,.77,1.4);put(g,M(new THREE.TorusGeometry(.24,.035,8,20),P.stripe),-.6,.86,1.4,Math.PI/2);
-  // HERO PROP: Fruit bowl
-  put(g,cyl(.25,.15,.15,P.white,8),-1.2,.7,1.4);
-  put(g,sph(.08,P.terra),-1.2,.82,1.4);put(g,sph(.08,"#E8B33C"),-1.1,.82,1.45);
   sets.kitchen={g,bg:"#F4E9D8",amb:.32,hemi:.46,key:.9};
-  
+
+  // HALLWAY
   g=new THREE.Group();
   put(g,box(.2,6,14,P.wall),-2.4,3,-3);put(g,box(.2,6,14,P.wall),2.4,3,-3);
   put(g,box(6,.2,14,P.wood),0,-.05,-3);put(g,box(6,6,.2,P.cream),0,3,-9);
@@ -135,43 +141,46 @@ function buildSets(){
   [[-2.28,1.9,-.2],[-2.28,1.6,-1.2],[-2.28,2.1,-2.2],[2.28,1.9,-.6],[2.28,1.6,-1.8]].forEach(p=>{put(g,M(new THREE.BoxGeometry(.06,.7,.55),{map:pic}),p[0],p[1],p[2])});
   put(g,box(.7,.08,.4,P.wood),-2,.9,.6);put(g,cyl(.05,.07,.5,P.terra),-2,.6,.6);
   put(g,cyl(.16,.22,.25,P.cream),-2,1.25,.6);
-  put(g,box(1.4,2.6,.15,P.white),0,1.3,-8.9);
-  // HERO PROP: Vase with plant
-  put(g,cyl(.1,.15,.3,P.teal,8),-2,1.4,.6);put(g,sph(.12,P.sage),-2,1.6,.6);
+  // Coat rack
+  put(g,cyl(.05,.05,2,P.woodD),2,.9,1);put(g,box(.1,.1,.1,P.woodD),2,1.9,1);
+  put(g,box(1.2,2.6,.15,P.white),0,1.3,-8.9);
   sets.hallway={g,bg:"#E9C9A8",amb:.28,hemi:.42,key:.85};
-  
+
+  // DOOR
   g=new THREE.Group();
   put(g,box(12,.2,10,P.cream),0,-.05,0);put(g,box(12,6,.2,P.wall),0,3,-2);
   put(g,box(1.1,2.5,.12,"#2E6B5E"),-1.15,1.25,-.8,0,.45);
+  put(g,box(.08,.2,.08,P.gold),-.7,1.2,-.7); // Doorknob
   put(g,box(8,.1,5,P.grass),0,-.02,-4);
   for(let i=0;i<9;i++)put(g,box(.08,.6,.06,P.white),-2.8+i*.6,.3,-3);
   put(g,box(5.5,.06,.06,P.white),0,.5,-3);
   put(g,cyl(.12,.16,.8,P.woodD),2.6,.4,-3.4);put(g,sph(.7,P.sage),2.6,1.3,-3.4);
   put(g,cyl(.16,.2,.3,P.terra),-1.9,.15,-.8);put(g,sph(.22,P.sage),-1.9,.45,-.8);put(g,sph(.06,"#C4302E"),-1.8,.55,-.75);
   sets.door={g,bg:"#DCE8C8",amb:.36,hemi:.5,key:.95};
-  
+
+  // NIGHT ROOM
   g=new THREE.Group();
   put(g,box(12,6,.2,"#6B5A4A"),0,3,-2);put(g,box(12,.2,10,"#5A4A3A"),0,-.05,0);
   put(g,box(1.6,.5,1,P.woodD),-1.4,.25,-.8);put(g,box(1.5,.18,.9,P.cream),-1.4,.55,-.8);put(g,box(.5,.14,.4,P.white),-1.8,.68,-.8);
+  // Pillow & Blanket
+  put(g,box(.6,.15,.4,P.white),-1.4,.65,-.6);put(g,box(1.4,.1,.8,P.teal),-1.4,.6,-.5);
   put(g,box(1,.08,.5,P.wood),1.3,.9,-1);put(g,cyl(.04,.05,.9,P.woodD),1.3,.45,-1);
   put(g,box(1.2,1,.1,"#2A3540"),1.2,2.2,-1.9);
   const flag=["#C4502E","#3E8E8C","#E8B33C","#7BA05B","#9B7FC4"];
   for(let i=0;i<5;i++){const t=M(new THREE.ConeGeometry(.12,.25,3),flag[i]);put(g,t,-1+i*.5,2.9,-1.8,Math.PI)}
-  // HERO PROP: Glowing lamp
-  put(g,cyl(.1,.15,.4,P.woodD,8),1.3,.2,-.8);
-  put(g,sph(.15,P.cream,{emissive:0xFFE3B8,emissiveIntensity:0.8}),1.3,.45,-.8);
   sets.room_night={g,bg:"#3A2F26",amb:.09,hemi:.12,key:.2};
-  
+
+  // OUTSIDE RAIN
   g=new THREE.Group();
   put(g,box(14,.2,10,"#6F8F5F"),0,-.05,-1);
   for(let i=0;i<13;i++)put(g,box(.08,.6,.06,P.white),-3.4+i*.55,.3,-3);
   put(g,box(7,.06,.06,P.white),0,.5,-3);
   put(g,cyl(.12,.16,.9,P.woodD),2.8,.45,-3.6);put(g,sph(.75,"#5F7F4F"),2.8,1.4,-3.6);
   put(g,M(new THREE.CircleGeometry(.7,20),"#7FA0B0",{transparent:true,opacity:.7}),-.5,.02,1.2,-Math.PI/2);
-  // HERO PROP: Bench
-  put(g,box(1.2,.1,.4,P.woodD),2.5,.3,-2);put(g,box(.1,.3,.1,P.woodD),2.0,.15,-2);put(g,box(.1,.3,.1,P.woodD),3.0,.15,-2);
+  // Mailbox
+  put(g,box(.3,.4,.2,P.teal),2.5,.5,-1);put(g,cyl(.05,.05,.5,P.woodD),2.5,.25,-1);
   sets.outside_rain={g,bg:"#9FB4A8",amb:.26,hemi:.36,key:.6};
-  
+
   for(const k in sets){sets[k].g.visible=false;
     sets[k].g.traverse(m=>{if(m.isMesh){m.castShadow=true;m.receiveShadow=true}});
     scene.add(sets[k].g)}
@@ -182,53 +191,45 @@ const chars={};
 function buildChar(cfg){
   const root=new THREE.Group(),rig={};
   const skin=cfg.skin||P.skin,hairC=cfg.hairColor||P.hair,shirt=cfg.shirt||P.mustard,pants=cfg.pants||"#4A6B8A";
+  // Softened torso
+  rig.torso=put(root,box(.56,.62,.34,shirt),0,.86,0);
+  if((cfg.shirtStyle||"plain")==="collar"){put(root,cyl(.15,.16,.07,P.white),0,1.2,0);put(root,cyl(.15,.16,.05,"#3A5A7A"),0,1.16,0);
+    for(let i=0;i<4;i++)put(root,sph(.025,P.white),0,.62+i*.14,.18)}
+  if(cfg.shirtStyle==="stripes"){for(let i=0;i<3;i++)put(root,box(.57,.06,.35,P.stripe),0,.7+i*.18,0)}
   
-  // Soft rounded torso
-  rig.torso=put(root,cyl(.32,.28,.6,shirt,8),0,.9,0);
-  
-  if((cfg.shirtStyle||"plain")==="collar"){
-      put(root,cyl(.2,.2,.08,P.white,8),0,1.22,0);
-      put(root,cyl(.2,.2,.06,"#3A5A7A",8),0,1.18,0);
-      for(let i=0;i<3;i++)put(root,sph(.03,P.white),0,.7+i*.15,.3);
-  }
-  if(cfg.shirtStyle==="stripes"){
-      for(let i=0;i<3;i++)put(root,cyl(.33,.29,.08,P.stripe,8),0,.75+i*.15,0);
-  }
-
-  // Soft rounded head
-  rig.head=new THREE.Group();rig.head.position.set(0,1.45,0);root.add(rig.head);
-  put(rig.head,cyl(.32,.34,.55,skin,8),0,.05,0);
-  
+  rig.head=new THREE.Group();rig.head.position.set(0,1.42,0);root.add(rig.head);
+  // Rounded head (using sphere for face, box for hair base)
+  put(rig.head,sph(.32,skin),0,.05,0);
   const hs=cfg.hair||"bob";
-  put(rig.head,box(.68,.2,.58,hairC),0,.32,0);
-  put(rig.head,box(.68,.4,.12,hairC),0,.1,-.28);
-  if(hs==="bob"||hs==="long"){put(rig.head,box(.12,.45,.52,hairC),-.32,.05,0);put(rig.head,box(.12,.45,.52,hairC),.32,.05,0)}
-  if(hs==="long")put(rig.head,box(.68,.6,.12,hairC),0,-.25,-.28);
-  if(hs==="bun")put(rig.head,sph(.15,hairC),0,.45,-.15);
-
-  rig.eyeL=put(rig.head,sph(.06,"#241A0E"),-.14,.08,.28);rig.eyeR=put(rig.head,sph(.06,"#241A0E"),.14,.08,.28);
-  rig.eyeL.scale.z=.5;rig.eyeR.scale.z=.5;
-  rig.browL=put(rig.head,box(.14,.04,.03,"#241A0E"),-.14,.22,.28);
-  rig.browR=put(rig.head,box(.14,.04,.03,"#241A0E"),.14,.22,.28);
+  put(rig.head,box(.64,.2,.56,hairC),0,.3,0);
+  put(rig.head,box(.64,.4,.12,hairC),0,.1,-.26);
+  if(hs==="bob"||hs==="long"){put(rig.head,box(.1,.42,.5,hairC),-.31,.05,0);put(rig.head,box(.1,.42,.5,hairC),.31,.05,0)}
+  if(hs==="long")put(rig.head,box(.6,.6,.12,hairC),0,-.25,-.26);
+  if(hs==="bun")put(rig.head,sph(.14,hairC),0,.42,-.15);
   
+  rig.eyeL=put(rig.head,sph(.055,"#241A0E"),-.13,.08,.27);rig.eyeR=put(rig.head,sph(.055,"#241A0E"),.13,.08,.27);
+  rig.eyeL.scale.z=.4;rig.eyeR.scale.z=.4;
+  rig.browL=put(rig.head,box(.14,.035,.03,"#241A0E"),-.13,.2,.27);
+  rig.browR=put(rig.head,box(.14,.035,.03,"#241A0E"),.13,.2,.27);
+  
+  // MOUTHS - Fixed and visible
   rig.mouths={};
-  rig.mouths.line=put(rig.head,box(.12,.03,.03,"#241A0E"),0,-.12,.28);
-  rig.mouths.smile=put(rig.head,M(new THREE.TorusGeometry(.08,.02,6,12,Math.PI),"#241A0E"),0,-.1,.28,0,0,Math.PI);
-  rig.mouths.frown=put(rig.head,M(new THREE.TorusGeometry(.07,.016,6,12,Math.PI),"#241A0E"),0,-.16,.28);
-  rig.mouths.open=put(rig.head,sph(.06,"#5A2A2A"),0,-.12,.28);rig.mouths.open.scale.set(1,.7,.4);
-  rig.mouths.small=put(rig.head,M(new THREE.TorusGeometry(.05,.014,6,10,Math.PI),"#241A0E"),0,-.11,.28,0,0,Math.PI);
-
-  // Soft rounded limbs
-  rig.armL=new THREE.Group();rig.armL.position.set(-.38,1.1,0);root.add(rig.armL);
-  put(rig.armL,cyl(.09,.09,.5,shirt,6),0,-.25,0);rig.handL=put(rig.armL,sph(.1,skin),0,-.52,0);
-  rig.armR=new THREE.Group();rig.armR.position.set(.38,1.1,0);root.add(rig.armR);
-  put(rig.armR,cyl(.09,.09,.5,shirt,6),0,-.25,0);rig.handR=put(rig.armR,sph(.1,skin),0,-.52,0);
+  rig.mouths.line=put(rig.head,box(.1,.025,.02,"#241A0E"),0,-.12,.28);
+  rig.mouths.smile=put(rig.head,M(new THREE.TorusGeometry(.06,.015,8,12,Math.PI),"#241A0E"),0,-.12,.28,0,0,Math.PI);
+  rig.mouths.frown=put(rig.head,M(new THREE.TorusGeometry(.05,.015,8,12,Math.PI),"#241A0E"),0,-.14,.28);
+  rig.mouths.open=put(rig.head,sph(.05,"#5A2A2A"),0,-.12,.28);rig.mouths.open.scale.set(1,.7,.4);
+  rig.mouths.small=put(rig.head,M(new THREE.TorusGeometry(.04,.012,8,10,Math.PI),"#241A0E"),0,-.11,.28,0,0,Math.PI);
   
-  rig.legL=new THREE.Group();rig.legL.position.set(-.15,.55,0);root.add(rig.legL);
-  put(rig.legL,cyl(.1,.1,.5,pants,6),0,-.25,0);put(rig.legL,box(.18,.1,.26,P.white),0,-.52,.04);
-  rig.legR=new THREE.Group();rig.legR.position.set(.15,.55,0);root.add(rig.legR);
-  put(rig.legR,cyl(.1,.1,.5,pants,6),0,-.25,0);put(rig.legR,box(.18,.1,.26,P.white),0,-.52,.04);
-
+  // Limbs
+  rig.armL=new THREE.Group();rig.armL.position.set(-.33,1.1,0);root.add(rig.armL);
+  put(rig.armL,box(.13,.5,.13,shirt),0,-.25,0);rig.handL=put(rig.armL,sph(.08,skin),0,-.52,0);
+  rig.armR=new THREE.Group();rig.armR.position.set(.33,1.1,0);root.add(rig.armR);
+  put(rig.armR,box(.13,.5,.13,shirt),0,-.25,0);rig.handR=put(rig.armR,sph(.08,skin),0,-.52,0);
+  rig.legL=new THREE.Group();rig.legL.position.set(-.13,.55,0);root.add(rig.legL);
+  put(rig.legL,box(.15,.5,.15,pants),0,-.25,0);put(rig.legL,box(.16,.09,.24,P.white),0,-.52,.04);
+  rig.legR=new THREE.Group();rig.legR.position.set(.13,.55,0);root.add(rig.legR);
+  put(rig.legR,box(.15,.5,.15,pants),0,-.25,0);put(rig.legR,box(.16,.09,.24,P.white),0,-.52,.04);
+  
   rig.brush=put(rig.handR,box(.04,.3,.04,P.teal),0,-.05,.1,.5);rig.brush.visible=false;
   rig.phone=put(rig.handR,box(.12,.22,.03,"#2A2A2A"),0,-.08,.05);rig.phone.visible=false;
   rig.spoon=put(rig.handR,box(.03,.25,.03,"#9AA0A8"),0,-.05,.08,.6);rig.spoon.visible=false;
@@ -238,7 +239,6 @@ function buildChar(cfg){
   
   const blob=new THREE.Mesh(new THREE.PlaneGeometry(1.5,1.1),new THREE.MeshBasicMaterial({map:blobTex,transparent:true,depthWrite:false}));
   blob.rotation.x=-Math.PI/2;blob.position.y=.03;blob.castShadow=false;blob.receiveShadow=false;blob.renderOrder=2;root.add(blob);
-  
   root.scale.setScalar(cfg.height||1);
   root.traverse(o=>{if(o.isMesh&&o!==blob){o.material=o.material.clone();o.material.transparent=true;o.castShadow=true}});
   root.userData.rig=rig;root.userData.pitch=(cfg.height||1)>=.9?130:250;root.userData.mouthOpen=0;root.userData.nextSyl=0;
@@ -346,55 +346,65 @@ function drawEndcard(c){if(!frozenBlur)makeFrozen();
   c.font=`italic 500 ${W*.032}px "EB Garamond",Georgia,serif`;c.fillStyle=P.gold;c.textAlign="center";
   const ql=wrap(c,e.question||"",W*.82);for(const l of ql){c.fillText(l,W/2,y);y+=W*.045}}
 
-let AC=null,master=null,recDest=null,delayN=null;
+// ============ MELODIC MUSIC ENGINE ============
+let AC=null,master=null,recDest=null;
 const audOn=()=>document.getElementById("aud").checked;
 function initAudio(){if(AC)return;AC=new (window.AudioContext||window.webkitAudioContext)();
   master=AC.createGain();master.gain.value=0;master.connect(AC.destination);
   recDest=AC.createMediaStreamDestination();master.connect(recDest);
-  delayN=AC.createDelay(1);delayN.delayTime.value=.31;
-  const fb=AC.createGain();fb.gain.value=.32;const lp=AC.createBiquadFilter();lp.type="lowpass";lp.frequency.value=2500;
-  delayN.connect(lp);lp.connect(fb);fb.connect(delayN);
-  const send=AC.createGain();send.gain.value=.25;master.connect(send);send.connect(delayN);delayN.connect(master)}
-const F=s=>261.63*Math.pow(2,s/12);
-function musicBox(f,t,vel){const o=AC.createOscillator(),g=AC.createGain();o.type="sine";o.frequency.value=f;
-  const o2=AC.createOscillator(),g2=AC.createGain();o2.type="sine";o2.frequency.value=f*4;g2.gain.value=.15;
-  g.gain.setValueAtTime(.001,t);g.gain.exponentialRampToValueAtTime(vel,t+.008);g.gain.exponentialRampToValueAtTime(.001,t+1.3);
-  o.connect(g);o2.connect(g);g.connect(master);o.start(t);o.stop(t+1.4);o2.start(t);o2.stop(t+1.4)}
-function bassN(f,t){const o=AC.createOscillator(),g=AC.createGain();o.type="sine";o.frequency.value=f/2;
-  g.gain.setValueAtTime(.001,t);g.gain.exponentialRampToValueAtTime(.14,t+.03);g.gain.exponentialRampToValueAtTime(.001,t+1.8);
-  o.connect(g);g.connect(master);o.start(t);o.stop(t+1.9)}
-function padN(f,t,d){[0,7].forEach(iv=>{const o=AC.createOscillator(),g=AC.createGain(),lp=AC.createBiquadFilter();
-  o.type="triangle";o.frequency.value=f*2*Math.pow(2,iv/12);o.detune.value=(Math.random()-.5)*8;
-  lp.type="lowpass";lp.frequency.value=1200;
-  g.gain.setValueAtTime(.001,t);g.gain.linearRampToValueAtTime(.035,t+.4);g.gain.linearRampToValueAtTime(.001,t+d);
-  o.connect(lp);lp.connect(g);g.connect(master);o.start(t);o.stop(t+d+.1)})}
-function playSyl(p){if(!AC||!audOn())return;const t=AC.currentTime;
+  const delay=AC.createDelay(1);delay.delayTime.value=.4;
+  const fb=AC.createGain();fb.gain.value=.4;const lp=AC.createBiquadFilter();lp.type="lowpass";lp.frequency.value=2000;
+  delay.connect(lp);lp.connect(fb);fb.connect(delay);
+  const send=AC.createGain();send.gain.value=.3;master.connect(send);send.connect(delay);delay.connect(master)}
+
+const N={C3:130.81,D3:146.83,E3:164.81,F3:174.61,G3:196.00,A3:220.00,B3:246.94,
+         C4:261.63,D4:293.66,E4:329.63,F4:349.23,G4:392.00,A4:440.00,B4:493.88,C5:523.25};
+// Melodies for each mood
+const MELODIES={
+  playful:[N.C4,0,N.E4,.5,N.G4,.5,N.C5,1,N.B4,.5,N.G4,.5,N.E4,.5,N.C4,.5],
+  sad:[N.A3,0,N.C4,1,N.E4,1,N.D4,.5,N.C4,.5,N.B3,1,N.A3,1],
+  swell:[N.F3,0,N.A3,.5,N.C4,.5,N.F4,1,N.E4,.5,N.C4,.5,N.A3,.5,N.F3,.5],
+  nostalgic:[N.C4,0,N.E4,.5,N.G4,.5,N.B4,1,N.A4,.5,N.G4,.5,N.E4,.5,N.C4,.5]
+};
+const CHORDS={
+  playful:[[N.C3,N.E3,N.G3],[N.G3,N.B3,N.D4],[N.A3,N.C4,N.E4],[N.F3,N.A3,N.C4]],
+  sad:[[N.A3,N.C4,N.E4],[N.F3,N.A3,N.C4],[N.C3,N.E3,N.G3],[N.G3,N.B3,N.D4]],
+  swell:[[N.F3,N.A3,N.C4],[N.G3,N.B3,N.D4],[N.E3,N.G3,N.B3],[N.A3,N.C4,N.E4]],
+  nostalgic:[[N.C3,N.E3,N.G3],[N.E3,N.G3,N.B3],[N.A3,N.C4,N.E4],[N.G3,N.B3,N.D4]]
+};
+
+function playNote(freq,time,type,vel,dur){
   const o=AC.createOscillator(),g=AC.createGain(),lp=AC.createBiquadFilter();
-  o.type="triangle";o.frequency.value=p*(.92+Math.random()*.2);lp.type="lowpass";lp.frequency.value=850;
-  g.gain.setValueAtTime(.001,t);g.gain.exponentialRampToValueAtTime(.07,t+.015);g.gain.exponentialRampToValueAtTime(.001,t+.12);
-  o.connect(lp);lp.connect(g);g.connect(master);o.start(t);o.stop(t+.15)}
-let NOTES=[],nPtr=0;
-const CH={0:"M",5:"M",7:"M",9:"m"},TRI={M:[0,4,7],m:[0,3,7]};
-function buildScore(){NOTES=[];nPtr=0;
-  for(const s of STORY.shots){
-    const mood=/hook|montage|reversal/.test(s.id)?"play":/separ|soft|twist/.test(s.id)?"sad":/reunion/.test(s.id)?"swell":"play";
-    const prog=mood==="sad"?[9,5,0,7]:mood==="swell"?[5,0,7,9]:[0,7,9,5];
-    const dur=s.end-s.start,bars=Math.max(1,Math.round(dur/2));
-    for(let b=0;b<bars;b++){const bt=s.start+b*2,semi=prog[b%4],tri=TRI[CH[semi]];
-      NOTES.push({t:bt,k:"bass",f:F(semi)});NOTES.push({t:bt,k:"pad",f:F(semi),d:1.9});
-      const step=mood==="sad"?1:.5,prob=mood==="sad"?.5:mood==="swell"?.85:.7;
-      for(let st=0;st<2;st+=step){if(Math.random()<prob){
-        const deg=tri[Math.floor(Math.random()*3)]+(mood==="swell"?24:12)+(Math.random()<.25?2:0);
-        NOTES.push({t:bt+st+(Math.random()-.5)*.03,k:"box",f:F(semi+deg),v:mood==="sad"?.25:.4})}}}
-    NOTES.sort((a,b)=>a.t-b.t)}
-  const le=Math.max(...STORY.shots.map(s=>s.end));
-  NOTES.push({t:le,k:"bass",f:F(5)},{t:le,k:"pad",f:F(5),d:2},{t:le+2,k:"bass",f:F(0)},{t:le+2,k:"pad",f:F(0),d:2.5},
-    {t:le+.5,k:"box",f:F(17),v:.3},{t:le+2.5,k:"box",f:F(12),v:.3});
-  NOTES.sort((a,b)=>a.t-b.t)}
-function scheduleAhead(t){if(!AC||!audOn())return;
-  while(nPtr<NOTES.length&&NOTES[nPtr].t<=t+.15){const n=NOTES[nPtr],at=AC.currentTime+Math.max(0,n.t-t);
-    if(n.k==="box")musicBox(n.f,at,n.v||.4);else if(n.k==="bass")bassN(n.f,at);else padN(n.f,at,n.d||1.9);
-    nPtr++}}
+  o.type=type;o.frequency.value=freq;
+  lp.type="lowpass";lp.frequency.value=type==="sine"?3000:1500;
+  const attack=type==="sine"?.01:.1,release=type==="sine"?.1:.8;
+  g.gain.setValueAtTime(.001,time);g.gain.exponentialRampToValueAtTime(vel,time+attack);
+  g.gain.exponentialRampToValueAtTime(.001,time+dur);
+  o.connect(lp);lp.connect(g);g.connect(master);o.start(time);o.stop(time+dur+.1)}
+
+function playChord(notes,time,vel,dur){notes.forEach(n=>playNote(n,time,"triangle",vel*.3,dur))}
+
+let musicTimer=null;
+function startMusic(){if(!AC||!audOn())return;
+  const t0=AC.currentTime+.5;
+  let beat=0;
+  musicTimer=setInterval(()=>{
+    const t=AC.currentTime;
+    // Determine mood based on current story time
+    const storyT=(t-t0);
+    let mood="playful";
+    if(storyT>20&&storyT<27)mood="sad";
+    else if(storyT>=27&&storyT<44)mood="nostalgic";
+    else if(storyT>=44&&storyT<51)mood="swell";
+    else if(storyT>=51)mood="nostalgic";
+    
+    const mel=MELODIES[mood],chord=CHORDS[mood];
+    const melIdx=beat%mel.length,chorIdx=Math.floor(beat/4)%chord.length;
+    if(mel[melIdx+1]&&beat%2===0)playNote(mel[melIdx],t,"sine",.4,mel[melIdx+1]);
+    if(beat%4===0)playChord(chord[chorIdx],t,.5,1.8);
+    beat++;
+  },500)}
+function stopMusic(){if(musicTimer)clearInterval(musicTimer)}
 
 let playing=false,recording=false,startT=0,recorder=null,chunks=[],total=65,lastFrame=0,activeTalk=[],endFaded=false;
 function calcTotal(){total=Math.max(...STORY.shots.map(s=>s.end))+4}
@@ -447,9 +457,8 @@ function frame(now){
       m.position.y-=9*dt;if(m.position.y<0)m.position.set((Math.random()-.5)*6,3.5+Math.random(),(Math.random()-.5)*4-1)}
     updParticles(dt);
     for(const at of activeTalk){const ud=at.ch.userData;
-      if(t>=ud.nextSyl){ud.nextSyl=t+.09+Math.random()*.13+(Math.random()<.12?.3:0);ud.mouthOpen=1;playSyl(at.pitch)}
+      if(t>=ud.nextSyl){ud.nextSyl=t+.09+Math.random()*.13+(Math.random()<.12?.3:0);ud.mouthOpen=1;playNote(ud.pitch,AC.currentTime,"triangle",.1,.1)}
       ud.mouthOpen=Math.max(0,ud.mouthOpen-dt*9)}
-    if(playing)scheduleAhead(t);
     renderer.render(scene,camera);
     ctx.drawImage(renderer.domElement,0,0,W,H);
     if(vig){ctx.fillStyle=vig;ctx.fillRect(0,0,W,H)}
@@ -460,7 +469,6 @@ function frame(now){
     drawCaption(ctx,cap,Math.min(1,local/.3));
     drawHUD(ctx,s.hud);
     frozen=null;frozenBlur=null;
-    if(playing&&AC&&!endFaded&&t>total-4.5){endFaded=true;master.gain.setTargetAtTime(.09,AC.currentTime,.4)}
   }else if(inEnd){if(!frozenBlur)makeFrozen();drawEndcard(ctx)}
   else{renderer.render(scene,camera);ctx.drawImage(renderer.domElement,0,0,W,H);if(vig){ctx.fillStyle=vig;ctx.fillRect(0,0,W,H)}drawTitle(ctx,STORY.meta.title,STORY.meta.highlight,1)}
   document.getElementById("fill").style.width=(playing?t/total*100:0)+"%";
@@ -468,9 +476,9 @@ function frame(now){
 }
 function startPlay(){initAudio();if(AC.state==="suspended")AC.resume();
   if(audOn()){master.gain.cancelScheduledValues(AC.currentTime);master.gain.setValueAtTime(.0001,AC.currentTime);master.gain.exponentialRampToValueAtTime(.16,AC.currentTime+1.2)}else master.gain.value=0;
-  buildScore();endFaded=false;playing=true;startT=performance.now();
+  startMusic();endFaded=false;playing=true;startT=performance.now();
   document.getElementById("play").disabled=true;document.getElementById("rec").disabled=true}
-function stopAll(){playing=false;document.getElementById("play").disabled=false;document.getElementById("rec").disabled=false;
+function stopAll(){playing=false;stopMusic();document.getElementById("play").disabled=false;document.getElementById("rec").disabled=false;
   if(AC){master.gain.setTargetAtTime(.0001,AC.currentTime,.3)}
   if(recorder&&recorder.state==="recording"){recorder.stop();recording=false}}
 document.getElementById("play").onclick=()=>{startPlay();setStatus("Main…")}
